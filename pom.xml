@@ -34,6 +34,16 @@
 	<artifactId>example-mate-crud</artifactId>
 	<version>0.0.1</version>
 
+	<properties>
+		<java.version>11</java.version>
+		<junit.version.suffix>3.2</junit.version.suffix>
+		<junit.jupiter.version>5.${junit.version.suffix}</junit.jupiter.version>
+		<junit.platform.version>1.${junit.version.suffix}</junit.platform.version>
+		<checkstyle.suppressions.location>
+			${project.basedir}/src/test/checkstyle/checkstyle-suppressions.xml
+		</checkstyle.suppressions.location>
+	</properties>
+
 	<name>example-mate-crud</name>
 
 	<description>
@@ -77,6 +87,60 @@
 			<layout>default</layout>
 		</repository>
 	</distributionManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.envimate.httpmate</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.envimate</groupId>
+			<artifactId>mapmate</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.6</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.5</version>
+		</dependency>
+
+		<!--TEST SCOPE-->
+		<dependency>
+			<groupId>com.mashape.unirest</groupId>
+			<artifactId>unirest-java</artifactId>
+			<version>1.4.9</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-launcher</artifactId>
+			<version>${junit.platform.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+
+	</dependencies>
 
 	<build>
 		<pluginManagement>

@@ -11,3 +11,8 @@ buildNumber.properties
 
 .idea/*
 *.iml
+
+!.idea/checkstyle-idea.xml
+!.idea/inspectionProfiles
+!.idea/runConfigurations
+!.idea/codeStyleSettings.xml
