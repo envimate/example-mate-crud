@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2018 envimate GmbH - https://envimate.com/.
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.envimate</groupId>
+		<artifactId>envimate-opensource-parent</artifactId>
+		<version>1.0.7</version>
+	</parent>
+
+	<packaging>pom</packaging>
+	<groupId>com.envimate.examples</groupId>
+	<artifactId>example-mate-crud</artifactId>
+	<version>0.0.1</version>
+
+	<name>example-mate-crud</name>
+
+	<description>
+		Example of a simple CRUD of resources using *mate frameworks
+	</description>
+
+	<url>https://github.com/envimate/example-mate-crud/</url>
+
+	<scm>
+		<url>https://github.com/envimate/example-mate-crud</url>
+		<connection>scm:git:git://github.com/envimate/example-mate-crud.git</connection>
+		<developerConnection>scm:git:git@github.com:envimate/example-mate-crud.git</developerConnection>
+	</scm>
+
+	<organization>
+		<name>envimate GmbH</name>
+		<url>https://www.envimate.com</url>
+	</organization>
+	<developers>
+		<developer>
+			<name>Nune Isabekyan</name>
+			<email>nune.isabekyan@envimate.com</email>
+			<organization>envimate GmbH</organization>
+			<organizationUrl>https://www.envimate.com</organizationUrl>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>sonatype.staging</id>
+			<name>Sonatype Staging</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+			<layout>default</layout>
+		</repository>
+	</distributionManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.0.0-M3</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>
