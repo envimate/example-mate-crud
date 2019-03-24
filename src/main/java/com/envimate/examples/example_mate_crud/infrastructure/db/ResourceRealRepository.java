@@ -19,26 +19,16 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.domain;
+package com.envimate.examples.example_mate_crud.infrastructure.db;
 
-import com.envimate.examples.example_mate_crud.validation.LengthValidator;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import com.envimate.examples.example_mate_crud.domain.Resource;
+import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RouteParameterKey {
-    private final String value;
+import java.util.List;
 
-    public static RouteParameterKey routeParameterKey(final String value) {
-        final String validated = LengthValidator.ensureMinLength(value, 1, "RouteParameterKey");
-        return new RouteParameterKey(validated);
-    }
-
-    public String internalValue() {
-        return this.value;
+public class ResourceRealRepository implements ResourceRepository {
+    @Override
+    public List<Resource> all() {
+        return null;
     }
 }

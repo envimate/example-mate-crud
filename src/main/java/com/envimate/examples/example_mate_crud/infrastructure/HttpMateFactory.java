@@ -23,26 +23,59 @@ package com.envimate.examples.example_mate_crud.infrastructure;
 
 import com.envimate.examples.example_mate_crud.usecases.ListResource;
 import com.envimate.httpmate.HttpMate;
+import com.envimate.httpmate.convenience.Http;
 import com.envimate.httpmate.request.HttpRequestMethod;
+import com.envimate.mapmate.deserialization.Deserializer;
+import com.envimate.mapmate.serialization.Serializer;
 import com.google.gson.Gson;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import static com.envimate.httpmate.convenience.cors.CorsHandler.handleCorsOptionsRequests;
 
 @ToString
 @EqualsAndHashCode
 final class HttpMateFactory {
-    private HttpMateFactory() {
+    private final Injector injector;
+
+    @Inject
+    HttpMateFactory(final Injector injector) {
+        this.injector = injector;
     }
 
-    static HttpMate httpMate() {
+    public HttpMate httpMate() {
         final Gson gson = new Gson();
-        return HttpMate
-                .aSimpleHttpMateInstanceWithSecureDefaults()
+        final Serializer serializer = MapMateFactory.serializer();
+        final Deserializer deserializer = MapMateFactory.deserializer();
+
+        return HttpMate.aHttpMateInstance()
                 .servingTheUseCase(ListResource.class)
-                .forRequestPath("api/payments")
-                .andRequestMethod(HttpRequestMethod.GET)
-                .mappingRequestsToUseCaseParametersUsing(gson::fromJson)
-                .serializingResponseObjectsUsing(gson::toJson);
+                .forRequestPath("api/resource").andRequestMethod(HttpRequestMethod.GET)
+                .handlingOptionsRequestsUsing(handleCorsOptionsRequests())
+                .obtainingUseCaseInstancesUsing(
+                        (useCase, webserviceRequest) -> this.injector.getInstance(useCase.useCaseClass())
+                )
+                .mappingRequestsToUseCaseParametersByDefaultUsing(
+                        (webServiceRequest, targetType, context) -> deserializer.deserialize(
+                                webServiceRequest.getBodyAs(String.class),
+                                targetType)
+                )
+                .usingTheResponseTemplate(
+                        (responseBuilder, context) ->
+                                responseBuilder.withEmptyBody().withContentType("application/json")
+                )
+                .serializingResponseObjectsByDefaultUsing(
+                        (object, responseBuilder, context) -> {
+                            responseBuilder.withBody(serializer.serialize(object));
+                        }
+                )
+                .mappingExceptionsByDefaultUsing((exception, responseBuilder, context) -> {
+                    exception.printStackTrace();
+                    responseBuilder.withStatusCode(Http.StatusCodes.INTERNAL_SERVER_ERROR);
+                })
+                .loggingToStdoutAndStderr();
     }
 
 }

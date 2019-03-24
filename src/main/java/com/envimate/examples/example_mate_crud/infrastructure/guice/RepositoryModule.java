@@ -19,18 +19,15 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.domain;
+package com.envimate.examples.example_mate_crud.infrastructure.guice;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
+import com.envimate.examples.example_mate_crud.infrastructure.db.ResourceRealRepository;
+import com.google.inject.Singleton;
 
-@ToString
-@EqualsAndHashCode
-public final class ListResourceRequest {
-    private ListResourceRequest() {
-    }
-
-    public static ListResourceRequest listResourceRequest() {
-        return new ListResourceRequest();
+public class RepositoryModule extends CrudModule {
+    @Override
+    protected void bindDependencies() {
+        bind(ResourceRepository.class).to(ResourceRealRepository.class).in(Singleton.class);
     }
 }

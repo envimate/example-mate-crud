@@ -33,17 +33,19 @@ import lombok.ToString;
 final class MapMateFactory {
     private static final String COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_DOMAIN =
             "com.envimate.examples.example_mate_crud.domain";
+    private static final String COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_USECASES =
+            "com.envimate.examples.example_mate_crud.usecases";
 
     private MapMateFactory() {
     }
 
-    public static Serializer serializer() {
+    static Serializer serializer() {
         return Serializer.aSerializer()
                 .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_DOMAIN)
                 .forCustomPrimitives()
                 .filteredBy(ClassFilters.allClassesThatHaveAPublicStringMethodWithZeroArgumentsNamed("internalValue"))
                 .thatAre().serializedUsingTheMethodNamed("internalValue")
-                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_DOMAIN)
+                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_USECASES)
                 .forDataTransferObjects()
                 .filteredBy(ClassFilters.includingAll())
                 .thatAre().serializedByItsPublicFields()
@@ -51,13 +53,13 @@ final class MapMateFactory {
                 .build();
     }
 
-    public static Deserializer deserializer() {
+    static Deserializer deserializer() {
         return Deserializer.aDeserializer()
                 .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_DOMAIN)
                 .forCustomPrimitives()
                 .filteredBy(ClassFilters.allClassesThatHaveAPublicStringMethodWithZeroArgumentsNamed("internalValue"))
                 .thatAre().deserializedUsingTheStaticMethodWithSingleStringArgument()
-                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_DOMAIN)
+                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_USECASES)
                 .forDataTransferObjects()
                 .filteredBy(ClassFilters.includingAll())
                 .thatAre().deserializedUsingTheSingleFactoryMethod()

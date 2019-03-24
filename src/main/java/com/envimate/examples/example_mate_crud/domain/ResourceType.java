@@ -30,12 +30,12 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RouteParameterKey {
+public final class ResourceType {
     private final String value;
 
-    public static RouteParameterKey routeParameterKey(final String value) {
-        final String validated = LengthValidator.ensureMinLength(value, 1, "RouteParameterKey");
-        return new RouteParameterKey(validated);
+    public static ResourceType resourceType(final String value) {
+        final String validated = LengthValidator.ensureMinLength(value, 1, "ResourceType");
+        return new ResourceType(validated);
     }
 
     public String internalValue() {

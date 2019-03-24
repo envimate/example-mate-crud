@@ -21,24 +21,30 @@
 
 package com.envimate.examples.example_mate_crud.domain;
 
-import com.envimate.examples.example_mate_crud.validation.LengthValidator;
+import com.envimate.examples.example_mate_crud.validation.UuidValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.UUID;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RouteParameterKey {
-    private final String value;
+public final class Id {
+    private final UUID value;
 
-    public static RouteParameterKey routeParameterKey(final String value) {
-        final String validated = LengthValidator.ensureMinLength(value, 1, "RouteParameterKey");
-        return new RouteParameterKey(validated);
+    public static Id id(final String value) {
+        final UUID validated = UuidValidator.ensureUuid(value, "Id");
+        return new Id(validated);
+    }
+
+    public static Id newUniqueId() {
+        return Id.id(UUID.randomUUID().toString());
     }
 
     public String internalValue() {
-        return this.value;
+        return this.value.toString();
     }
 }

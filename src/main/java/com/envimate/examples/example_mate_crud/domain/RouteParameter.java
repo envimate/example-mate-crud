@@ -29,7 +29,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class RouteParameter {
+public final class RouteParameter {
     public final RouteParameterKey key;
     public final RouteParameterValue value;
 

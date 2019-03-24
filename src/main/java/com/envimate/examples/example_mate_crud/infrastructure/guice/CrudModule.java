@@ -19,26 +19,29 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.domain;
+package com.envimate.examples.example_mate_crud.infrastructure.guice;
 
-import com.envimate.examples.example_mate_crud.validation.LengthValidator;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import com.google.inject.AbstractModule;
+import com.google.inject.binder.ScopedBindingBuilder;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RouteParameterKey {
-    private final String value;
+import java.lang.reflect.Constructor;
 
-    public static RouteParameterKey routeParameterKey(final String value) {
-        final String validated = LengthValidator.ensureMinLength(value, 1, "RouteParameterKey");
-        return new RouteParameterKey(validated);
+public abstract class CrudModule extends AbstractModule {
+    @Override
+    protected final void configure() {
+        super.configure();
+        bindDependencies();
     }
 
-    public String internalValue() {
-        return this.value;
+    @SuppressWarnings("rawtypes")
+    protected ScopedBindingBuilder bindToSingleConstructor(final Class<?> aClass) {
+        final Constructor[] constructors = aClass.getConstructors();
+        if (constructors.length == 1) {
+            return bind(aClass).toConstructor(constructors[0]);
+        } else {
+            throw new IllegalArgumentException(String.format("%s has multiple constructors", aClass));
+        }
     }
+
+    protected abstract void bindDependencies();
 }

@@ -21,17 +21,17 @@
 
 package com.envimate.examples.example_mate_crud.validation;
 
-public final class CustomTypeValidationException extends RuntimeException {
+final class CustomTypeValidationException extends RuntimeException {
     private CustomTypeValidationException(final String message) {
         super(message);
     }
 
-    public static CustomTypeValidationException customTypeValidationException(
+    static CustomTypeValidationException customTypeValidationException(
             final String format, final Object... args) {
         return new CustomTypeValidationException(String.format(format, args));
     }
 
-    public static CustomTypeValidationException customTypeValidationException(
+    static CustomTypeValidationException customTypeValidationException(
             final Exception cause, final String format, final Object... args) {
         return new CustomTypeValidationException(String.format(format, args));
     }

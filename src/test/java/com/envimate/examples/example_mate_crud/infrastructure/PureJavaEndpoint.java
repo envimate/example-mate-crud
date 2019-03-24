@@ -30,8 +30,6 @@ import lombok.RequiredArgsConstructor;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-import static com.envimate.examples.example_mate_crud.infrastructure.PureJavaEndpointHandler.javaOnlyEndpointHandler;
-
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PureJavaEndpoint implements AutoCloseable {
     private final HttpServer httpServer;
@@ -41,7 +39,7 @@ public final class PureJavaEndpoint implements AutoCloseable {
             final HttpServer httpServer;
             try {
                 httpServer = HttpServer.create(new InetSocketAddress(port), 0);
-                final HttpHandler httpHandler = javaOnlyEndpointHandler(httpMate);
+                final HttpHandler httpHandler = PureJavaEndpointHandler.javaOnlyEndpointHandler(httpMate);
                 httpServer.createContext("/", httpHandler);
                 httpServer.setExecutor(null);
                 httpServer.start();

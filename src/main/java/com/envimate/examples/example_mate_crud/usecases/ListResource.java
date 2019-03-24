@@ -21,17 +21,25 @@
 
 package com.envimate.examples.example_mate_crud.usecases;
 
-import com.envimate.examples.example_mate_crud.domain.ListResourceDTO;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import com.envimate.examples.example_mate_crud.domain.Resource;
+import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PUBLIC)
-public class ListResource {
+import java.util.List;
+import java.util.stream.Collectors;
+
+public final class ListResource {
+    private final ResourceRepository resourceRepository;
+
+    public ListResource(final ResourceRepository resourceRepository) {
+        this.resourceRepository = resourceRepository;
+    }
+
     public ListResourceDTO listPayments() {
-        return ListResourceDTO.listResourceDTO();
+        final List<Resource> all = this.resourceRepository.all();
+        final List<ResourceDTO> resourceDTOList = all.stream()
+                .map(resource -> ResourceDTO.resourceDTO(resource.id, resource.resourceType))
+                .collect(Collectors.toList());
+
+        return new ListResourceDTO(resourceDTOList);
     }
 }

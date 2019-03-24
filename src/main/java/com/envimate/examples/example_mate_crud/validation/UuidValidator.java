@@ -19,18 +19,22 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.domain;
+package com.envimate.examples.example_mate_crud.validation;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import java.util.UUID;
 
-@ToString
-@EqualsAndHashCode
-public final class ListResourceDTO {
-    private ListResourceDTO() {
+import static com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException.customTypeValidationException;
+
+public final class UuidValidator {
+    private UuidValidator() {
     }
 
-    public static ListResourceDTO listResourceDTO() {
-        return new ListResourceDTO();
+    public static UUID ensureUuid(final String value, final String description) {
+        final String sanitized = SanityValidator.sanitized(value, description);
+        try {
+            return UUID.fromString(sanitized);
+        } catch (final IllegalArgumentException e) {
+            throw customTypeValidationException(e, "%s must be a valid uuid.", description);
+        }
     }
 }

@@ -19,9 +19,10 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.domain;
+package com.envimate.examples.example_mate_crud.usecases;
 
-import com.envimate.examples.example_mate_crud.validation.LengthValidator;
+import com.envimate.examples.example_mate_crud.domain.Id;
+import com.envimate.examples.example_mate_crud.domain.ResourceType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -30,15 +31,11 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RouteParameterKey {
-    private final String value;
+public final class ResourceDTO {
+    public final Id id;
+    public final ResourceType type;
 
-    public static RouteParameterKey routeParameterKey(final String value) {
-        final String validated = LengthValidator.ensureMinLength(value, 1, "RouteParameterKey");
-        return new RouteParameterKey(validated);
-    }
-
-    public String internalValue() {
-        return this.value;
+    public static ResourceDTO resourceDTO(final Id id, final ResourceType type) {
+        return new ResourceDTO(id, type);
     }
 }

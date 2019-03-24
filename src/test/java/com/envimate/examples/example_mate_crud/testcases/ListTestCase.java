@@ -21,28 +21,29 @@
 
 package com.envimate.examples.example_mate_crud.testcases;
 
-import com.envimate.examples.example_mate_crud.domain.ListResourceDTO;
-import com.envimate.examples.example_mate_crud.domain.ListResourceRequest;
 import com.envimate.examples.example_mate_crud.infrastructure.Backend;
-import com.envimate.examples.example_mate_crud.infrastructure.LocalBackendParameterResolver;
 import com.envimate.examples.example_mate_crud.infrastructure.Scenario;
 import com.envimate.examples.example_mate_crud.usecases.ListResource;
+import com.envimate.examples.example_mate_crud.usecases.ListResourceDTO;
+import com.envimate.examples.example_mate_crud.usecases.ListResourceRequest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-import static com.envimate.examples.example_mate_crud.domain.ListResourceRequest.listResourceRequest;
 import static com.envimate.examples.example_mate_crud.infrastructure.Scenario.scenario;
+import static com.envimate.examples.example_mate_crud.usecases.ListResourceRequest.listResourceRequest;
 
-@ExtendWith(LocalBackendParameterResolver.class)
-public class ListTestCase {
+public interface ListTestCase {
 
     @Test
-    void listUseCase(final Backend backend) {
+    default void listUseCase(final Backend backend) {
         final ListResourceRequest request = listResourceRequest();
         final Scenario<ListResourceDTO, ListResourceRequest> scenario =
                 scenario(ListResource.class, ListResourceDTO.class, request);
 
-        backend.verifyThat(scenario).isSuccess();
+        backend.verifyThat(scenario)
+                .isSuccess()
+                .verifyResponse(
+                        listResourceDTO -> listResourceDTO.data.isEmpty(), "List is expected to be empty"
+                );
     }
 
 }

@@ -28,4 +28,7 @@
 	<suppress checks="VisibilityModifier" files=".*Request.java" />
 	<suppress checks="VisibilityModifier" files=".*Response.java" />
 	<suppress checks="VisibilityModifier" files=".*RouteParameter.*.java" />
+	<suppress checks="VisibilityModifier" files=".*Response.*.java" />
+	<suppress checks="VisibilityModifier" files=".*DTO.*.java" />
+	<suppress checks="VisibilityModifier" files=".*Resource.java" />
 </suppressions>

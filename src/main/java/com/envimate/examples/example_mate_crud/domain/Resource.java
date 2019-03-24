@@ -21,7 +21,6 @@
 
 package com.envimate.examples.example_mate_crud.domain;
 
-import com.envimate.examples.example_mate_crud.validation.LengthValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -30,15 +29,11 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RouteParameterKey {
-    private final String value;
+public final class Resource {
+    public final Id id;
+    public final ResourceType resourceType;
 
-    public static RouteParameterKey routeParameterKey(final String value) {
-        final String validated = LengthValidator.ensureMinLength(value, 1, "RouteParameterKey");
-        return new RouteParameterKey(validated);
-    }
-
-    public String internalValue() {
-        return this.value;
+    public static Resource resource(final Id id, final ResourceType resourceType) {
+        return new Resource(id, resourceType);
     }
 }

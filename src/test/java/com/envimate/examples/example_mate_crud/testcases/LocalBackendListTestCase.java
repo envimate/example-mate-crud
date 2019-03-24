@@ -19,26 +19,11 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.domain;
+package com.envimate.examples.example_mate_crud.testcases;
 
-import com.envimate.examples.example_mate_crud.validation.LengthValidator;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import com.envimate.examples.example_mate_crud.infrastructure.LocalBackendParameterResolver;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RouteParameterKey {
-    private final String value;
-
-    public static RouteParameterKey routeParameterKey(final String value) {
-        final String validated = LengthValidator.ensureMinLength(value, 1, "RouteParameterKey");
-        return new RouteParameterKey(validated);
-    }
-
-    public String internalValue() {
-        return this.value;
-    }
+@ExtendWith(LocalBackendParameterResolver.class)
+public class LocalBackendListTestCase implements ListTestCase {
 }

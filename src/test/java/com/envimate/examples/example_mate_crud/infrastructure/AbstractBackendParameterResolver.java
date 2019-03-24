@@ -31,10 +31,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 
 import java.util.Map;
 
-import static com.envimate.examples.example_mate_crud.infrastructure.Backend.backend;
-import static com.envimate.examples.example_mate_crud.infrastructure.Endpoint.endpoint;
 import static com.envimate.examples.example_mate_crud.infrastructure.HttpMethod.httpMethod;
-import static com.envimate.examples.example_mate_crud.infrastructure.Url.url;
 
 public abstract class AbstractBackendParameterResolver implements ParameterResolver {
     private static Boolean isStarted = false;
@@ -58,9 +55,9 @@ public abstract class AbstractBackendParameterResolver implements ParameterResol
             final Deserializer deserializer = MapMateFactory.deserializer();
 
             final Map<Class<?>, Endpoint> endpoints = Map.of(ListResource.class,
-                    endpoint(url("/api/payments"), httpMethod("GET")));
+                    Endpoint.endpoint(Url.url("/api/resource"), httpMethod("GET")));
 
-            return backend(serializer, deserializer, endpoints, backendClient());
+            return Backend.backend(serializer, deserializer, endpoints, backendClient());
         }
         throw new UnsupportedOperationException("Unsupported dependency");
     }

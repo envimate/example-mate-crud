@@ -21,15 +21,13 @@
 
 package com.envimate.examples.example_mate_crud.validation;
 
-import static com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException.customTypeValidationException;
-
 public final class NotNullValidator {
     private NotNullValidator() {
     }
 
     public static void ensureNotNull(final Object value, final String description) {
         if (value == null) {
-            throw customTypeValidationException("%s cannot be null.", description);
+            throw CustomTypeValidationException.customTypeValidationException("%s cannot be null.", description);
         }
     }
 }

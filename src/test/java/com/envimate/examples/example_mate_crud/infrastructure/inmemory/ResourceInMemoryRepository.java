@@ -19,26 +19,35 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.domain;
+package com.envimate.examples.example_mate_crud.infrastructure.inmemory;
 
-import com.envimate.examples.example_mate_crud.validation.LengthValidator;
+import com.envimate.examples.example_mate_crud.domain.Id;
+import com.envimate.examples.example_mate_crud.domain.Resource;
+import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RouteParameterKey {
-    private final String value;
+public final class ResourceInMemoryRepository implements ResourceRepository {
+    private static final int INITIAL_CAPACITY = 100;
+    private final Map<Id, Resource> db;
 
-    public static RouteParameterKey routeParameterKey(final String value) {
-        final String validated = LengthValidator.ensureMinLength(value, 1, "RouteParameterKey");
-        return new RouteParameterKey(validated);
+    static ResourceInMemoryRepository resourceInMemoryRepository() {
+        final HashMap<Id, Resource> db = new HashMap<>(INITIAL_CAPACITY);
+        return new ResourceInMemoryRepository(db);
     }
 
-    public String internalValue() {
-        return this.value;
+    @Override
+    public List<Resource> all() {
+        return new ArrayList<>(this.db.values());
     }
 }

@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class RouteParameters {
+public final class RouteParameters {
     public final List<RouteParameter> parameters;
 
     public static RouteParameters routeParameters(final RouteParameter... parameters) {

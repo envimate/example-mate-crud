@@ -30,10 +30,10 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class Host {
+public final class Host {
     private final String value;
 
-    public static Host host(final String value) {
+    static Host host(final String value) {
         final String validated = LengthValidator.ensureMinLength(value, 1, "hostname");
         return new Host(validated);
     }
