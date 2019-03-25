@@ -21,28 +21,49 @@
 
 package com.envimate.examples.example_mate_crud.testcases;
 
+import com.envimate.examples.example_mate_crud.domain.ResourceType;
 import com.envimate.examples.example_mate_crud.infrastructure.Backend;
 import com.envimate.examples.example_mate_crud.infrastructure.Scenario;
-import com.envimate.examples.example_mate_crud.usecases.ListResource;
-import com.envimate.examples.example_mate_crud.usecases.ListResourceDTO;
-import com.envimate.examples.example_mate_crud.usecases.ListResourceRequest;
+import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResource;
+import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResourceDTO;
+import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResourceRequest;
+import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResource;
+import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResourceDTO;
+import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResourceRequest;
 import org.junit.jupiter.api.Test;
 
 import static com.envimate.examples.example_mate_crud.infrastructure.Scenario.scenario;
-import static com.envimate.examples.example_mate_crud.usecases.ListResourceRequest.listResourceRequest;
+import static com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResourceRequest.createResourceRequest;
 
 public interface ListTestCase {
 
     @Test
-    default void listUseCase(final Backend backend) {
-        final ListResourceRequest request = listResourceRequest();
+    default void listUseCaseEmptyDatabase(final Backend backend) {
         final Scenario<ListResourceDTO, ListResourceRequest> scenario =
-                scenario(ListResource.class, ListResourceDTO.class, request);
+                scenario(ListResource.class, ListResourceDTO.class, null);
 
         backend.verifyThat(scenario)
                 .isSuccess()
                 .verifyResponse(
                         listResourceDTO -> listResourceDTO.data.isEmpty(), "List is expected to be empty"
+                );
+    }
+
+    @Test
+    default void listUseCase(final Backend backend) {
+        final CreateResourceRequest createResourceRequest = createResourceRequest(ResourceType.resourceType("payment"));
+        final Scenario<CreateResourceDTO, CreateResourceRequest> existing =
+                scenario(CreateResource.class, CreateResourceDTO.class, createResourceRequest);
+
+        final Scenario<ListResourceDTO, ListResourceRequest> scenario =
+                scenario(ListResource.class, ListResourceDTO.class, null);
+
+        backend.given(existing)
+                .verifyThat(scenario)
+                .isSuccess()
+                .verifyResponse(
+                        listResourceDTO -> listResourceDTO.data.size() == 1,
+                        "List is expected to contain thepreviously created resource"
                 );
     }
 

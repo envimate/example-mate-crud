@@ -19,23 +19,25 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.usecases;
+package com.envimate.examples.example_mate_crud.usecases.resource.create;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
-import com.envimate.examples.example_mate_crud.domain.ResourceType;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import com.envimate.examples.example_mate_crud.domain.Resource;
+import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ResourceDTO {
-    public final Id id;
-    public final ResourceType type;
+import static com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResourceDTO.createResourceDTO;
 
-    public static ResourceDTO resourceDTO(final Id id, final ResourceType type) {
-        return new ResourceDTO(id, type);
+public final class CreateResource {
+    private final ResourceRepository resourceRepository;
+
+    public CreateResource(final ResourceRepository resourceRepository) {
+        this.resourceRepository = resourceRepository;
+    }
+
+    public CreateResourceDTO createResource(final CreateResourceRequest createResourceRequest) {
+        final Resource newResource = Resource.resource(Id.newUniqueId(), createResourceRequest.resourceType);
+        this.resourceRepository.create(newResource);
+
+        return createResourceDTO(newResource.id);
     }
 }

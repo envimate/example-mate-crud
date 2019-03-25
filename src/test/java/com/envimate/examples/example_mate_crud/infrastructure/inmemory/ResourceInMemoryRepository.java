@@ -24,30 +24,38 @@ package com.envimate.examples.example_mate_crud.infrastructure.inmemory;
 import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.domain.Resource;
 import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import com.envimate.mapmate.deserialization.Deserializer;
+import com.envimate.mapmate.serialization.Serializer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ResourceInMemoryRepository implements ResourceRepository {
     private static final int INITIAL_CAPACITY = 100;
+
+    private final Serializer serializer;
+    private final Deserializer deserializer;
     private final Map<Id, Resource> db;
 
-    static ResourceInMemoryRepository resourceInMemoryRepository() {
-        final HashMap<Id, Resource> db = new HashMap<>(INITIAL_CAPACITY);
-        return new ResourceInMemoryRepository(db);
+    public ResourceInMemoryRepository(final Serializer serializer,
+                                      final Deserializer deserializer) {
+        this.serializer = serializer;
+        this.deserializer = deserializer;
+        this.db = new HashMap<>(INITIAL_CAPACITY);
     }
 
     @Override
     public List<Resource> all() {
         return new ArrayList<>(this.db.values());
+    }
+
+    public void create(final Resource resource) {
+        this.db.put(resource.id, clone(resource));
+    }
+
+    private Resource clone(final Resource resource) {
+        return this.deserializer.deserialize(this.serializer.serialize(resource), Resource.class);
     }
 }

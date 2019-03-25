@@ -19,25 +19,23 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.usecases;
+package com.envimate.examples.example_mate_crud.usecases.resource;
 
+import com.envimate.examples.example_mate_crud.domain.Id;
+import com.envimate.examples.example_mate_crud.domain.ResourceType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public final class ListResourceDTO {
-    public final List<ResourceDTO> data;
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ResourceDTO {
+    public final Id id;
+    public final ResourceType type;
 
-    public static ListResourceDTO listResourceDTO(final ResourceDTO[] data) {
-        return new ListResourceDTO(Optional.ofNullable(data).map(Arrays::asList).orElse(new LinkedList<>()));
+    public static ResourceDTO resourceDTO(final Id id, final ResourceType type) {
+        return new ResourceDTO(id, type);
     }
 }

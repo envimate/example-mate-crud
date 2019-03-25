@@ -25,6 +25,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
+import com.mashape.unirest.request.HttpRequestWithBody;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +57,19 @@ public class BackendClient {
 
         httpRequest.headers(rawRequest.headers);
         rawRequest.routeParameters.forEach(httpRequest::routeParam);
+
+        if(httpRequest instanceof HttpRequestWithBody) {
+            ((HttpRequestWithBody)httpRequest).body(rawRequest.body);
+        } else {
+            if(rawRequest.hasBody()) {
+                throw new UnsupportedOperationException(
+                        String.format("Can't send http request with method %s and body %s",
+                                rawRequest.httpMethod,
+                                rawRequest.body)
+                );
+            }
+        }
+
         final HttpResponse<String> stringHttpResponse;
 
         try {

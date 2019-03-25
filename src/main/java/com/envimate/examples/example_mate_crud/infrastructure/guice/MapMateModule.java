@@ -19,21 +19,16 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.infrastructure.db;
+package com.envimate.examples.example_mate_crud.infrastructure.guice;
 
-import com.envimate.examples.example_mate_crud.domain.Resource;
-import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
+import com.envimate.examples.example_mate_crud.infrastructure.MapMateFactory;
+import com.envimate.mapmate.deserialization.Deserializer;
+import com.envimate.mapmate.serialization.Serializer;
 
-import java.util.List;
-
-public class ResourceRealRepository implements ResourceRepository {
+public class MapMateModule extends CrudModule {
     @Override
-    public List<Resource> all() {
-        return null;
-    }
-
-    @Override
-    public void create(final Resource resource) {
-
+    protected void bindDependencies() {
+        bind(Serializer.class).toInstance(MapMateFactory.serializer());
+        bind(Deserializer.class).toInstance(MapMateFactory.deserializer());
     }
 }

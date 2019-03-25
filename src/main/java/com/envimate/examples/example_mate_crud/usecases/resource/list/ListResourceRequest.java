@@ -19,34 +19,18 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.infrastructure;
+package com.envimate.examples.example_mate_crud.usecases.resource.list;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-
-import java.util.Map;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class RawRequest {
-    public final String url;
-    public final String httpMethod;
-    public final Map<String, String> headers;
-    public final Map<String, String> routeParameters;
-    public final String body;
-
-    public static RawRequest rawRequest(final String url,
-                                        final String httpMethod,
-                                        final Map<String, String> headers,
-                                        final Map<String, String> routeParameters,
-                                        final String body) {
-        return new RawRequest(url, httpMethod, headers, routeParameters, body);
+public final class ListResourceRequest {
+    private ListResourceRequest() {
     }
 
-    public boolean hasBody() {
-        return this.body != null && !this.body.isEmpty();
+    public static ListResourceRequest listResourceRequest() {
+        return new ListResourceRequest();
     }
 }

@@ -35,6 +35,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.envimate.httpmate.request.RawHttpRequest.rawHttpRequest;
 import static com.envimate.httpmate.util.Streams.streamInputStreamToOutputStream;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toMap;
@@ -48,19 +49,19 @@ final class PureJavaEndpointHandler implements HttpHandler {
     }
 
     @Override
-    public void handle(final HttpExchange httpExchange) throws IOException {
-        final String requestMethod = httpExchange.getRequestMethod();
-        final String path = httpExchange.getRequestURI().getPath();
-        final String query = httpExchange.getRequestURI().getQuery();
+    public void handle(final HttpExchange exchange) throws IOException {
+        final String requestMethod = exchange.getRequestMethod();
+        final String path = exchange.getRequestURI().getPath();
+        final String query = exchange.getRequestURI().getQuery();
         final Map<String, String> queryParameters = queryToMap(query);
-        final Map<String, String> headers = httpExchange.getRequestHeaders().entrySet().stream()
+        final Map<String, String> headers = exchange.getRequestHeaders().entrySet().stream()
                 .collect(toMap(Map.Entry::getKey, entry -> entry.getValue().get(0)));
-        final InputStream body = httpExchange.getRequestBody();
-        final RawHttpRequest rawHttpRequest = RawHttpRequest.rawHttpRequest(requestMethod, path, queryParameters, headers, body);
-        final HttpResponse response = httpMate.handleRequest(rawHttpRequest);
-        response.headers().forEach((key, value) -> httpExchange.getResponseHeaders().put(key, singletonList(value)));
-        httpExchange.sendResponseHeaders(response.status(), 0);
-        final OutputStream responseStream = httpExchange.getResponseBody();
+        final InputStream body = exchange.getRequestBody();
+        final RawHttpRequest rawHttpRequest = rawHttpRequest(requestMethod, path, queryParameters, headers, body);
+        final HttpResponse response = this.httpMate.handleRequest(rawHttpRequest);
+        response.headers().forEach((key, value) -> exchange.getResponseHeaders().put(key, singletonList(value)));
+        exchange.sendResponseHeaders(response.status(), 0);
+        final OutputStream responseStream = exchange.getResponseBody();
         streamInputStreamToOutputStream(response.body(), responseStream);
     }
 

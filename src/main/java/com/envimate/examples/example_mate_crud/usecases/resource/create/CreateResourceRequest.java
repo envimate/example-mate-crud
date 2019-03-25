@@ -19,27 +19,21 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.usecases;
+package com.envimate.examples.example_mate_crud.usecases.resource.create;
 
-import com.envimate.examples.example_mate_crud.domain.Resource;
-import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
+import com.envimate.examples.example_mate_crud.domain.ResourceType;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-import java.util.List;
-import java.util.stream.Collectors;
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class CreateResourceRequest {
+    public final ResourceType resourceType;
 
-public final class ListResource {
-    private final ResourceRepository resourceRepository;
-
-    public ListResource(final ResourceRepository resourceRepository) {
-        this.resourceRepository = resourceRepository;
-    }
-
-    public ListResourceDTO listPayments() {
-        final List<Resource> all = this.resourceRepository.all();
-        final List<ResourceDTO> resourceDTOList = all.stream()
-                .map(resource -> ResourceDTO.resourceDTO(resource.id, resource.resourceType))
-                .collect(Collectors.toList());
-
-        return new ListResourceDTO(resourceDTOList);
+    public static CreateResourceRequest createResourceRequest(final ResourceType resourceType) {
+        return new CreateResourceRequest(resourceType);
     }
 }

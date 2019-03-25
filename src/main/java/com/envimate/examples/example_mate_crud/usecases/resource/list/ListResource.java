@@ -19,21 +19,28 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.infrastructure.db;
+package com.envimate.examples.example_mate_crud.usecases.resource.list;
 
 import com.envimate.examples.example_mate_crud.domain.Resource;
 import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
+import com.envimate.examples.example_mate_crud.usecases.resource.ResourceDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class ResourceRealRepository implements ResourceRepository {
-    @Override
-    public List<Resource> all() {
-        return null;
+public final class ListResource {
+    private final ResourceRepository resourceRepository;
+
+    public ListResource(final ResourceRepository resourceRepository) {
+        this.resourceRepository = resourceRepository;
     }
 
-    @Override
-    public void create(final Resource resource) {
+    public ListResourceDTO listResources() {
+        final List<Resource> all = this.resourceRepository.all();
+        final List<ResourceDTO> resourceDTOList = all.stream()
+                .map(resource -> ResourceDTO.resourceDTO(resource.id, resource.resourceType))
+                .collect(Collectors.toList());
 
+        return new ListResourceDTO(resourceDTOList);
     }
 }

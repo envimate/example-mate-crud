@@ -23,11 +23,12 @@ package com.envimate.examples.example_mate_crud.infrastructure.inmemory;
 
 import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.CrudModule;
+import com.google.inject.Singleton;
 
 public class RepositoryInMemoryModule extends CrudModule {
     @Override
     protected void bindDependencies() {
-        final ResourceInMemoryRepository resourceInMemoryRepository = ResourceInMemoryRepository.resourceInMemoryRepository();
-        bind(ResourceRepository.class).toInstance(resourceInMemoryRepository);
+        bindToSingleConstructor(ResourceInMemoryRepository.class).in(Singleton.class);
+        bind(ResourceRepository.class).to(ResourceInMemoryRepository.class);
     }
 }

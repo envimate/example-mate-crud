@@ -21,7 +21,8 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure;
 
-import com.envimate.examples.example_mate_crud.usecases.ListResource;
+import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResource;
+import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResource;
 import com.envimate.mapmate.deserialization.Deserializer;
 import com.envimate.mapmate.serialization.Serializer;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -54,8 +55,10 @@ public abstract class AbstractBackendParameterResolver implements ParameterResol
             final Serializer serializer = MapMateFactory.serializer();
             final Deserializer deserializer = MapMateFactory.deserializer();
 
-            final Map<Class<?>, Endpoint> endpoints = Map.of(ListResource.class,
-                    Endpoint.endpoint(Url.url("/api/resource"), httpMethod("GET")));
+            final Map<Class<?>, Endpoint> endpoints = Map.of(
+                    ListResource.class, Endpoint.endpoint(Url.url("/api/resource"), httpMethod("GET")),
+                    CreateResource.class, Endpoint.endpoint(Url.url("/api/resource"), httpMethod("POST"))
+            );
 
             return Backend.backend(serializer, deserializer, endpoints, backendClient());
         }

@@ -28,7 +28,9 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.envimate.examples.example_mate_crud.infrastructure.RawRequest.rawRequest;
 
@@ -49,8 +51,8 @@ public class Backend {
         return new Backend(serializer, deserializer, endpoints, backendClient);
     }
 
-    public Backend when(final Scenario scenario) {
-        this.response = this.execute(scenario);
+    public Backend given(final Scenario... scenarios) {
+        Arrays.stream(scenarios).forEach(this::execute);
         return this;
     }
 
@@ -58,16 +60,16 @@ public class Backend {
         return execute(scenario);
     }
 
-    private <R> Response<R> execute(final Scenario scenario) {
-        final Object payload = scenario.payload();
-        final String serialize = serializer.serialize(payload);
+    private <R, P> Response<R> execute(final Scenario<R, P> scenario) {
+        final P payload = scenario.payload();
+        final String serializedPayload = Optional.ofNullable(payload).map(body -> serializer.serialize(body)).orElse(null);
         final Endpoint endpoint = endpoints.get(scenario.useCaseClass());
 
         final RawRequest rawRequest = rawRequest(endpoint.url.internalValue(),
                 endpoint.httpMethod.internalValue(),
                 Map.of("Content-Type", "application/json"),
                 scenario.routeParameters().asMap(),
-                serialize);
+                serializedPayload);
         final RawResponse rawResponse = backendClient.execute(rawRequest);
 
         final R parsedResponse = (R) deserializer.deserialize(rawResponse.body, scenario.responseClass());

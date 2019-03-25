@@ -27,4 +27,6 @@ import java.util.List;
 
 public interface ResourceRepository {
     List<Resource> all();
+
+    void create(Resource resource);
 }

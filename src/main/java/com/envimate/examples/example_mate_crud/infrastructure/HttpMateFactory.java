@@ -21,42 +21,47 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure;
 
-import com.envimate.examples.example_mate_crud.usecases.ListResource;
+import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResource;
+import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResource;
 import com.envimate.httpmate.HttpMate;
 import com.envimate.httpmate.convenience.Http;
-import com.envimate.httpmate.request.HttpRequestMethod;
+import com.envimate.httpmate.response.HttpResponseBuilder;
 import com.envimate.mapmate.deserialization.Deserializer;
 import com.envimate.mapmate.serialization.Serializer;
-import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import static com.envimate.httpmate.convenience.cors.CorsHandler.handleCorsOptionsRequests;
+import static com.envimate.httpmate.request.HttpRequestMethod.GET;
+import static com.envimate.httpmate.request.HttpRequestMethod.POST;
 
 @ToString
 @EqualsAndHashCode
 final class HttpMateFactory {
     private final Injector injector;
+    private Serializer serializer;
+    private Deserializer deserializer;
 
     @Inject
-    HttpMateFactory(final Injector injector) {
+    HttpMateFactory(final Injector injector, final Serializer serializer, final Deserializer deserializer) {
         this.injector = injector;
+        this.serializer = serializer;
+        this.deserializer = deserializer;
     }
 
     public HttpMate httpMate() {
-        final Gson gson = new Gson();
-        final Serializer serializer = MapMateFactory.serializer();
-        final Deserializer deserializer = MapMateFactory.deserializer();
-
         return HttpMate.aHttpMateInstance()
                 .servingTheUseCase(ListResource.class)
-                .forRequestPath("api/resource").andRequestMethod(HttpRequestMethod.GET)
+                .forRequestPath("api/resource").andRequestMethod(GET)
+                .servingTheUseCase(CreateResource.class)
+                .forRequestPath("api/resource").andRequestMethod(POST)
                 .handlingOptionsRequestsUsing(handleCorsOptionsRequests())
                 .obtainingUseCaseInstancesUsing(
                         (useCase, webserviceRequest) -> this.injector.getInstance(useCase.useCaseClass())
                 )
+                .withTheRequestBodyReadToString()
                 .mappingRequestsToUseCaseParametersByDefaultUsing(
                         (webServiceRequest, targetType, context) -> deserializer.deserialize(
                                 webServiceRequest.getBodyAs(String.class),
@@ -73,9 +78,9 @@ final class HttpMateFactory {
                 )
                 .mappingExceptionsByDefaultUsing((exception, responseBuilder, context) -> {
                     exception.printStackTrace();
+                    final HttpResponseBuilder responseBuilder1 = responseBuilder;
                     responseBuilder.withStatusCode(Http.StatusCodes.INTERNAL_SERVER_ERROR);
                 })
                 .loggingToStdoutAndStderr();
     }
-
 }
