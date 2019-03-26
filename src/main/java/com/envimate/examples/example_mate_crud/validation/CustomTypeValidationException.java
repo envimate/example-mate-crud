@@ -22,6 +22,8 @@
 package com.envimate.examples.example_mate_crud.validation;
 
 final class CustomTypeValidationException extends RuntimeException {
+    private static final long serialVersionUID = -8385820586772764981L;
+
     private CustomTypeValidationException(final String message) {
         super(message);
     }

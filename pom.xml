@@ -34,6 +34,8 @@
 	<version>0.0.1</version>
 
 	<properties>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 		<junit.version.suffix>3.2</junit.version.suffix>
 		<junit.jupiter.version>5.${junit.version.suffix}</junit.jupiter.version>
 		<junit.platform.version>1.${junit.version.suffix}</junit.platform.version>
