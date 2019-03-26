@@ -32,6 +32,8 @@ import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResour
 import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResourceRequest;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static com.envimate.examples.example_mate_crud.infrastructure.Scenario.scenario;
 import static com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResourceRequest.createResourceRequest;
 
@@ -58,12 +60,12 @@ public interface ListTestCase {
         final Scenario<ListResourceDTO, ListResourceRequest> scenario =
                 scenario(ListResource.class, ListResourceDTO.class, null);
 
-        backend.given(existing)
+        backend.given(List.of(existing))
                 .verifyThat(scenario)
                 .isSuccess()
                 .verifyResponse(
                         listResourceDTO -> listResourceDTO.data.size() == 1,
-                        "List is expected to contain thepreviously created resource"
+                        "List is expected to contain the previously created resource."
                 );
     }
 

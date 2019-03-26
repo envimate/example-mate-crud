@@ -47,8 +47,7 @@ public final class Response<R> {
     }
 
     public Response<R> verifyResponse(final Predicate<R> assertion, final String description) {
-        Assertions.assertTrue(assertion.test(this.parsedResponse), description);
-
+        Assertions.assertTrue(assertion.test(this.parsedResponse), String.format("%s. Response: %s", description, this));
         return this;
     }
 

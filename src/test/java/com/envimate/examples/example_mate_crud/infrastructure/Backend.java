@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -37,22 +38,21 @@ import static com.envimate.examples.example_mate_crud.infrastructure.RawRequest.
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class Backend {
+public final class Backend {
     private final Serializer serializer;
     private final Deserializer deserializer;
     private final Map<Class<?>, Endpoint> endpoints;
     private final BackendClient backendClient;
-    private Response response;
 
-    public static Backend backend(final Serializer serializer,
-                                 final Deserializer deserializer,
-                                 final Map<Class<?>, Endpoint> endpoints,
-                                 final BackendClient backendClient) {
+    static Backend backend(final Serializer serializer,
+                           final Deserializer deserializer,
+                           final Map<Class<?>, Endpoint> endpoints,
+                           final BackendClient backendClient) {
         return new Backend(serializer, deserializer, endpoints, backendClient);
     }
 
-    public Backend given(final Scenario... scenarios) {
-        Arrays.stream(scenarios).forEach(this::execute);
+    public <R, P> Backend given(final Iterable<Scenario<R, P>> scenarios) {
+        scenarios.forEach(this::execute);
         return this;
     }
 
@@ -62,17 +62,17 @@ public class Backend {
 
     private <R, P> Response<R> execute(final Scenario<R, P> scenario) {
         final P payload = scenario.payload();
-        final String serializedPayload = Optional.ofNullable(payload).map(body -> serializer.serialize(body)).orElse(null);
-        final Endpoint endpoint = endpoints.get(scenario.useCaseClass());
+        final String serializedPayload = Optional.ofNullable(payload).map(this.serializer::serialize).orElse(null);
+        final Endpoint endpoint = this.endpoints.get(scenario.useCaseClass());
 
         final RawRequest rawRequest = rawRequest(endpoint.url.internalValue(),
                 endpoint.httpMethod.internalValue(),
                 Map.of("Content-Type", "application/json"),
                 scenario.routeParameters().asMap(),
                 serializedPayload);
-        final RawResponse rawResponse = backendClient.execute(rawRequest);
+        final RawResponse rawResponse = this.backendClient.execute(rawRequest);
 
-        final R parsedResponse = (R) deserializer.deserialize(rawResponse.body, scenario.responseClass());
+        final R parsedResponse = this.deserializer.deserialize(rawResponse.body, scenario.responseClass());
 
         return Response.response(parsedResponse, rawResponse);
     }

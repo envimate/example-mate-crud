@@ -33,7 +33,7 @@ public abstract class CrudModule extends AbstractModule {
         bindDependencies();
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     protected ScopedBindingBuilder bindToSingleConstructor(final Class<?> aClass) {
         final Constructor[] constructors = aClass.getConstructors();
         if (constructors.length == 1) {
