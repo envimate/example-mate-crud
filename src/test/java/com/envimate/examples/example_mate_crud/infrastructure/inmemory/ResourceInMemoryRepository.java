@@ -55,6 +55,11 @@ public final class ResourceInMemoryRepository implements ResourceRepository {
         this.db.put(resource.id, clone(resource));
     }
 
+    @Override
+    public Resource find(final Id id) {
+        return db.get(id);
+    }
+
     private Resource clone(final Resource resource) {
         return this.deserializer.deserialize(this.serializer.serialize(resource), Resource.class);
     }

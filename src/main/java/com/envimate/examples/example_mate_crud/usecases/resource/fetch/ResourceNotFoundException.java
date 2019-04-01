@@ -19,11 +19,22 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.testcases;
+package com.envimate.examples.example_mate_crud.usecases.resource.fetch;
 
-import com.envimate.examples.example_mate_crud.infrastructure.LocalBackendParameterResolver;
-import org.junit.jupiter.api.extension.ExtendWith;
+public final class ResourceNotFoundException extends RuntimeException {
+    private static final long serialVersionUID = -702655807628721573L;
 
-@ExtendWith(LocalBackendParameterResolver.class)
-public class LocalBackendListTestSpecs implements ListTestCase {
+    private ResourceNotFoundException(final String message) {
+        super(message);
+    }
+
+    static ResourceNotFoundException resourceNotFoundException(
+            final String format, final Object... args) {
+        return new ResourceNotFoundException(String.format(format, args));
+    }
+
+    static ResourceNotFoundException resourceNotFoundException(
+            final Exception cause, final String format, final Object... args) {
+        return new ResourceNotFoundException(String.format(format, args));
+    }
 }

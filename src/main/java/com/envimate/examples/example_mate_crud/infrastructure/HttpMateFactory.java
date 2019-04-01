@@ -21,11 +21,14 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure;
 
+import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResource;
+import com.envimate.examples.example_mate_crud.usecases.resource.fetch.FetchResource;
+import com.envimate.examples.example_mate_crud.usecases.resource.fetch.ResourceNotFoundException;
 import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResource;
+import com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException;
 import com.envimate.httpmate.HttpMate;
 import com.envimate.httpmate.convenience.Http;
-import com.envimate.httpmate.response.HttpResponseBuilder;
 import com.envimate.mapmate.deserialization.Deserializer;
 import com.envimate.mapmate.serialization.Serializer;
 import com.google.inject.Inject;
@@ -57,15 +60,18 @@ final class HttpMateFactory {
                 .forRequestPath("api/resource").andRequestMethod(GET)
                 .servingTheUseCase(CreateResource.class)
                 .forRequestPath("api/resource").andRequestMethod(POST)
+                .servingTheUseCase(FetchResource.class)
+                .forRequestPath("api/resource/<id>").andRequestMethod(GET)
                 .handlingOptionsRequestsUsing(handleCorsOptionsRequests())
                 .obtainingUseCaseInstancesUsing(
                         (useCase, webserviceRequest) -> this.injector.getInstance(useCase.useCaseClass())
                 )
                 .withTheRequestBodyReadToString()
-                .mappingRequestsToUseCaseParametersByDefaultUsing(
-                        (webServiceRequest, targetType, context) -> deserializer.deserialize(
-                                webServiceRequest.getBodyAs(String.class),
-                                targetType)
+                .mappingRequestsToUseCaseParametersOfType(Id.class).using((webServiceRequest, targetType, context) ->
+                        webServiceRequest.getPathParameter("id").map(Id::id).get()
+                )
+                .mappingRequestsToUseCaseParametersByDefaultUsing((webServiceRequest, targetType, context) ->
+                        this.deserializer.deserialize(webServiceRequest.getBodyAs(String.class), targetType)
                 )
                 .usingTheResponseTemplate(
                         (responseBuilder, context) ->
@@ -76,9 +82,14 @@ final class HttpMateFactory {
                             responseBuilder.withBody(serializer.serialize(object));
                         }
                 )
+                .mappingExceptionsOfType(ResourceNotFoundException.class).using((object, responseBuilder, context) ->
+                        responseBuilder.withStatusCode(Http.StatusCodes.NOT_FOUND)
+                )
+                .mappingExceptionsOfType(CustomTypeValidationException.class).using((object, responseBuilder, context) ->
+                        responseBuilder.withStatusCode(Http.StatusCodes.BAD_REQUEST)
+                )
                 .mappingExceptionsByDefaultUsing((exception, responseBuilder, context) -> {
                     exception.printStackTrace();
-                    final HttpResponseBuilder responseBuilder1 = responseBuilder;
                     responseBuilder.withStatusCode(Http.StatusCodes.INTERNAL_SERVER_ERROR);
                 })
                 .loggingToStdoutAndStderr();

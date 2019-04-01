@@ -21,6 +21,7 @@
 
 package com.envimate.examples.example_mate_crud.domain.repository;
 
+import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.domain.Resource;
 
 import java.util.List;
@@ -29,4 +30,6 @@ public interface ResourceRepository {
     List<Resource> all();
 
     void create(Resource resource);
+
+    Resource find(Id id);
 }

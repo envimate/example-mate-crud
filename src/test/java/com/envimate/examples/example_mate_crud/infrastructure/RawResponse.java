@@ -21,18 +21,63 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure;
 
-import lombok.*;
+import com.envimate.examples.example_mate_crud.infrastructure.raw_request.ApiRequest;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
+import com.mashape.unirest.http.HttpResponse;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import org.junit.jupiter.api.Assertions;
 
-import java.util.List;
-import java.util.Map;
+import java.util.function.Consumer;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 public class RawResponse {
-    public final String body;
-    public final Map<String, List<String>> responseHeaders;
-    public final Integer statusCode;
+    private final ApiRequest apiRequest;
+    private final HttpResponse<String> jsonResponse;
+    private final DocumentContext parsedResponse;
 
+    private String assertionMessage(final String additionalInfo) {
+        return String.format("%s. Request: %s. Response: %s.", additionalInfo, apiRequest, parsedResponse);
+    }
+
+    public static RawResponse rawResponse(final ApiRequest apiRequest, final HttpResponse<String> jsonResponse) {
+        final DocumentContext parsedResponse = JsonPath.parse(jsonResponse.getRawBody());
+        return new RawResponse(apiRequest, jsonResponse, parsedResponse);
+    }
+
+    public RawResponse isSuccess() {
+        return assertStatusCode(200);
+    }
+
+    public <T> T fieldValue(final String path) {
+        try {
+            return parsedResponse.read(path);
+        }catch(PathNotFoundException e) {
+            Assertions.fail(assertionMessage(String.format("Did not find requested field %s", path)), e);
+            throw e;
+        }
+    }
+
+    public void andVerifyThat(final Consumer<RawResponse> verification) {
+        verification.accept(this);
+    }
+
+    public RawResponse isNotFound() {
+        return assertStatusCode(404);
+    }
+
+    private RawResponse assertStatusCode(final int expectedCode) {
+        Assertions.assertEquals(expectedCode, this.jsonResponse.getStatus(), assertionMessage("Unexpected status code"));
+        return this;
+    }
+
+    public RawResponse isInvalidRequest() {
+        return assertStatusCode(400);
+    }
 }

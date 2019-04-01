@@ -21,6 +21,7 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure;
 
+import com.envimate.examples.example_mate_crud.infrastructure.raw_request.ApiRequest;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -30,6 +31,8 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import static com.envimate.examples.example_mate_crud.infrastructure.RawResponse.rawResponse;
 
 @ToString
 @EqualsAndHashCode
@@ -41,9 +44,9 @@ public class BackendClient {
         return new BackendClient(host);
     }
 
-    public RawResponse execute(final RawRequest rawRequest) {
-        final String httpMethod = rawRequest.httpMethod;
-        final String url = host.internalValue() + rawRequest.url;
+    public RawResponse execute(final ApiRequest apiRequest) {
+        final String httpMethod = apiRequest.httpMethod;
+        final String url = host.internalValue() + apiRequest.urlTemplate;
         final HttpRequest httpRequest;
         if ("GET".equals(httpMethod)) {
             httpRequest = Unirest.get(url);
@@ -55,32 +58,29 @@ public class BackendClient {
             throw new UnsupportedOperationException("Only GET and POST http methods are supported at this point");
         }
 
-        httpRequest.headers(rawRequest.headers);
-        rawRequest.routeParameters.forEach(httpRequest::routeParam);
+        httpRequest.headers(apiRequest.headers);
+        apiRequest.routeParameters.forEach(httpRequest::routeParam);
 
         if(httpRequest instanceof HttpRequestWithBody) {
-            ((HttpRequestWithBody)httpRequest).body(rawRequest.body);
+            ((HttpRequestWithBody)httpRequest).body(apiRequest.body);
         } else {
-            if(rawRequest.hasBody()) {
+            if(apiRequest.hasBody()) {
                 throw new UnsupportedOperationException(
                         String.format("Can't send http request with method %s and body %s",
-                                rawRequest.httpMethod,
-                                rawRequest.body)
+                                apiRequest.httpMethod,
+                                apiRequest.body)
                 );
             }
         }
 
-        final HttpResponse<String> stringHttpResponse;
+        final HttpResponse<String> jsonResponse;
 
         try {
-            stringHttpResponse = httpRequest.asString();
+            jsonResponse = httpRequest.asString();
         } catch (UnirestException e) {
-            throw new UnsupportedOperationException(String.format("Error executing request %s", rawRequest), e);
+            throw new UnsupportedOperationException(String.format("Error executing request %s", apiRequest), e);
         }
 
-        return RawResponse.builder()
-                .body(stringHttpResponse.getBody())
-                .responseHeaders(stringHttpResponse.getHeaders())
-                .statusCode(stringHttpResponse.getStatus()).build();
+        return rawResponse(apiRequest, jsonResponse);
     }
 }

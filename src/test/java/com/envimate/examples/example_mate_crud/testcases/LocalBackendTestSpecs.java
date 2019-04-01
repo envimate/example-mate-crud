@@ -19,23 +19,11 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.usecases.resource;
+package com.envimate.examples.example_mate_crud.testcases;
 
-import com.envimate.examples.example_mate_crud.domain.Id;
-import com.envimate.examples.example_mate_crud.domain.ResourceType;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import com.envimate.examples.example_mate_crud.infrastructure.LocalBackendParameterResolver;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ResourceDTO {
-    public final Id id;
-    public final ResourceType resourceType;
-
-    public static ResourceDTO resourceDTO(final Id id, final ResourceType resourceType) {
-        return new ResourceDTO(id, resourceType);
-    }
+@ExtendWith(LocalBackendParameterResolver.class)
+public class LocalBackendTestSpecs implements ListTestCase, CreateTestCase, FetchTestCase{
 }

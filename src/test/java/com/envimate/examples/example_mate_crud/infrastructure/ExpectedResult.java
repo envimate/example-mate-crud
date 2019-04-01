@@ -21,34 +21,19 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure;
 
-import com.envimate.httpmate.convenience.Http.StatusCodes;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import org.junit.jupiter.api.Assertions;
-
-import java.util.function.Predicate;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Response<R> {
-    public final R parsedResponse;
-    public final RawResponse rawResponse;
+public class ExpectedResult<R> {
+    public final Class<R> resultClass;
+    public final String resultIdentifier;
 
-    static <R> Response<R> response(final R parsedResponse, final RawResponse rawResponse) {
-        return new Response<>(parsedResponse, rawResponse);
+    public static <R> ExpectedResult<R> expectedResult(final Class<R> resultClass, final String resultIdentifier) {
+        return new ExpectedResult<>(resultClass, resultIdentifier);
     }
-
-    public Response<R> isSuccess() {
-        Assertions.assertEquals(StatusCodes.OK, (int) this.rawResponse.statusCode);
-        return this;
-    }
-
-    public Response<R> verifyResponse(final Predicate<R> assertion, final String description) {
-        Assertions.assertTrue(assertion.test(this.parsedResponse), String.format("%s. Response: %s", description, this));
-        return this;
-    }
-
 }

@@ -22,6 +22,7 @@
 package com.envimate.examples.example_mate_crud.infrastructure.guice;
 
 import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResource;
+import com.envimate.examples.example_mate_crud.usecases.resource.fetch.FetchResource;
 import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResource;
 
 public class UseCaseModule extends CrudModule {
@@ -30,5 +31,6 @@ public class UseCaseModule extends CrudModule {
     protected void bindDependencies() {
         bindToSingleConstructor(ListResource.class);
         bindToSingleConstructor(CreateResource.class);
+        bindToSingleConstructor(FetchResource.class);
     }
 }

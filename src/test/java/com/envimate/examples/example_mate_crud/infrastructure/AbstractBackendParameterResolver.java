@@ -21,18 +21,10 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure;
 
-import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResource;
-import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResource;
-import com.envimate.mapmate.deserialization.Deserializer;
-import com.envimate.mapmate.serialization.Serializer;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
-
-import java.util.Map;
-
-import static com.envimate.examples.example_mate_crud.infrastructure.HttpMethod.httpMethod;
 
 public abstract class AbstractBackendParameterResolver implements ParameterResolver {
     private static Boolean isStarted = false;
@@ -40,7 +32,7 @@ public abstract class AbstractBackendParameterResolver implements ParameterResol
     @Override
     public boolean supportsParameter(final ParameterContext parameterContext,
                                      final ExtensionContext extensionContext) throws ParameterResolutionException {
-        return parameterContext.getParameter().getType().equals(Backend.class);
+        return parameterContext.getParameter().getType().equals(BackendClient.class);
     }
 
     @Override
@@ -51,16 +43,8 @@ public abstract class AbstractBackendParameterResolver implements ParameterResol
             isStarted = true;
         }
         final Class<?> parameterType = parameterContext.getParameter().getType();
-        if(parameterType.equals(Backend.class)) {
-            final Serializer serializer = MapMateFactory.serializer();
-            final Deserializer deserializer = MapMateFactory.deserializer();
-
-            final Map<Class<?>, Endpoint> endpoints = Map.of(
-                    ListResource.class, Endpoint.endpoint(Url.url("/api/resource"), httpMethod("GET")),
-                    CreateResource.class, Endpoint.endpoint(Url.url("/api/resource"), httpMethod("POST"))
-            );
-
-            return Backend.backend(serializer, deserializer, endpoints, backendClient());
+        if(parameterType.equals(BackendClient.class)) {
+            return backendClient();
         }
         throw new UnsupportedOperationException("Unsupported dependency");
     }

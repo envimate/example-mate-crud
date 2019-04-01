@@ -19,27 +19,28 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.infrastructure.db;
+package com.envimate.examples.example_mate_crud.usecases.resource.fetch;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.domain.Resource;
 import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
+import com.envimate.examples.example_mate_crud.usecases.resource.ResourceDTO;
 
-import java.util.List;
+import static com.envimate.examples.example_mate_crud.usecases.resource.ResourceDTO.resourceDTO;
 
-public class ResourceRealRepository implements ResourceRepository {
-    @Override
-    public List<Resource> all() {
-        return null;
+public final class FetchResource {
+    private final ResourceRepository resourceRepository;
+
+    public FetchResource(final ResourceRepository resourceRepository) {
+        this.resourceRepository = resourceRepository;
     }
 
-    @Override
-    public void create(final Resource resource) {
-
-    }
-
-    @Override
-    public Resource find(final Id id) {
-        return null;
+    public ResourceDTO fetchResource(final Id id) {
+        final Resource resource = this.resourceRepository.find(id);
+        if(resource == null) {
+            throw ResourceNotFoundException.resourceNotFoundException("Resource for id %s not found", id.internalValue());
+        }
+        //todo fetchResourceDTO?..
+        return resourceDTO(resource.id, resource.resourceType);
     }
 }

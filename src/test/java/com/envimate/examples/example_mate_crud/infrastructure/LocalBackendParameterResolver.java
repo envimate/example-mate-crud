@@ -24,6 +24,7 @@ package com.envimate.examples.example_mate_crud.infrastructure;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.MapMateModule;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.UseCaseModule;
 import com.envimate.examples.example_mate_crud.infrastructure.inmemory.RepositoryInMemoryModule;
+import com.envimate.httpmate.HttpMate;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -38,7 +39,8 @@ public class LocalBackendParameterResolver extends AbstractBackendParameterResol
                 new MapMateModule(),
                 new UseCaseModule());
         final HttpMateFactory httpMateFactory = injector.getInstance(HttpMateFactory.class);
-        PureJavaEndpoint.pureJavaEndpointFor(httpMateFactory.httpMate()).listeningOnThePort(LOCAL_ENDPOINT_PORT);
+        final HttpMate httpMate = httpMateFactory.httpMate();
+        PureJavaEndpoint.pureJavaEndpointFor(httpMate).listeningOnThePort(LOCAL_ENDPOINT_PORT);
     }
 
     @Override

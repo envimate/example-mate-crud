@@ -19,10 +19,9 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.usecases.resource;
+package com.envimate.examples.example_mate_crud.usecases.resource.fetch;
 
-import com.envimate.examples.example_mate_crud.domain.Id;
-import com.envimate.examples.example_mate_crud.domain.ResourceType;
+import com.envimate.examples.example_mate_crud.usecases.resource.ResourceDTO;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +29,11 @@ import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ResourceDTO {
-    public final Id id;
-    public final ResourceType resourceType;
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+public final class FetchResourceDTO {
+    public final ResourceDTO resource;
 
-    public static ResourceDTO resourceDTO(final Id id, final ResourceType resourceType) {
-        return new ResourceDTO(id, resourceType);
+    public static FetchResourceDTO fetchResourceDTO(final ResourceDTO resource) {
+        return new FetchResourceDTO(resource);
     }
 }
