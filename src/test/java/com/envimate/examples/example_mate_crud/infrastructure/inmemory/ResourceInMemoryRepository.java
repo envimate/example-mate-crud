@@ -23,6 +23,8 @@ package com.envimate.examples.example_mate_crud.infrastructure.inmemory;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.domain.Resource;
+import com.envimate.examples.example_mate_crud.domain.ResourceType;
+import com.envimate.examples.example_mate_crud.domain.Version;
 import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
 import com.envimate.mapmate.deserialization.Deserializer;
 import com.envimate.mapmate.serialization.Serializer;
@@ -58,6 +60,18 @@ public final class ResourceInMemoryRepository implements ResourceRepository {
     @Override
     public Resource find(final Id id) {
         return db.get(id);
+    }
+
+    @Override
+    public Resource update(final Id id, final Version version, final ResourceType resourceType) {
+        final Resource oldResource = db.get(id);
+        if(oldResource == null) {
+            throw new UnsupportedOperationException("//TODO");
+        }
+        //todo next?...
+        final Resource newResource = Resource.resource(id, resourceType, Version.next(version));
+        db.put(id, newResource);
+        return clone(newResource);
     }
 
     private Resource clone(final Resource resource) {

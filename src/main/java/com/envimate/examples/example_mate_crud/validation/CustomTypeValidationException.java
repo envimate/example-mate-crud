@@ -28,12 +28,12 @@ public final class CustomTypeValidationException extends RuntimeException {
         super(message);
     }
 
-    static CustomTypeValidationException customTypeValidationException(
+    public static CustomTypeValidationException customTypeValidationException(
             final String format, final Object... args) {
         return new CustomTypeValidationException(String.format(format, args));
     }
 
-    static CustomTypeValidationException customTypeValidationException(
+    public static CustomTypeValidationException customTypeValidationException(
             final Exception cause, final String format, final Object... args) {
         return new CustomTypeValidationException(String.format(format, args));
     }

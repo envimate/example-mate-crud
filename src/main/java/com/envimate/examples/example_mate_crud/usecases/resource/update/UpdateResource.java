@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.usecases.resource.fetch;
+package com.envimate.examples.example_mate_crud.usecases.resource.update;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.domain.Resource;
@@ -28,20 +28,31 @@ import com.envimate.examples.example_mate_crud.usecases.resource.ResourceDTO;
 import com.envimate.examples.example_mate_crud.usecases.resource.ResourceNotFoundException;
 
 import static com.envimate.examples.example_mate_crud.usecases.resource.ResourceDTO.resourceDTO;
+import static com.envimate.examples.example_mate_crud.usecases.resource.ResourceNotFoundException.resourceNotFoundException;
+import static com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException.customTypeValidationException;
 
-public final class FetchResource {
+public final class UpdateResource {
     private final ResourceRepository resourceRepository;
 
-    public FetchResource(final ResourceRepository resourceRepository) {
+    public UpdateResource(final ResourceRepository resourceRepository) {
         this.resourceRepository = resourceRepository;
     }
 
-    public ResourceDTO fetchResource(final Id id) {
+    public ResourceDTO updateResource(final Id id, final UpdateResourceRequest request) {
+        if (!request.id.equals(id)) {
+            throw customTypeValidationException(String.format(
+                    "The provided id(%s) does not correspond to the id in the request(%s)",
+                    id.internalValue(),
+                    request.id.internalValue())
+            );
+        }
+
         final Resource resource = this.resourceRepository.find(id);
         if(resource == null) {
-            throw ResourceNotFoundException.resourceNotFoundException("Resource for id %s not found", id.internalValue());
+            throw resourceNotFoundException("Resource for id %s not found", id.internalValue());
         }
         //todo fetchResourceDTO?..
-        return resourceDTO(resource.id, resource.resourceType);
+        final Resource updatedResource = this.resourceRepository.update(id, resource.version, request.resourceType);
+        return resourceDTO(updatedResource.id, updatedResource.resourceType);
     }
 }

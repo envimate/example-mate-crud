@@ -36,6 +36,10 @@ public class ApiRequest {
         return apiRequest("/api/resource", Map.of(), "GET");
     }
 
+    public static ApiRequest updateResourceRequest(final String id) {
+        return apiRequest("/api/resource/{id}", Map.of("id", id), "PUT");
+    }
+
     public ApiRequest with(final ApiRequestBodyPropertyProvider propertyProvider) {
         if(this.body == null) {
             this.body = new JSONObject();

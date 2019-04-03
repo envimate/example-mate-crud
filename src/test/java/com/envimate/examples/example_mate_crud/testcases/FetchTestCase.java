@@ -57,11 +57,10 @@ public interface FetchTestCase {
     }
 
     @Test
-    default void awesomeTest(final BackendClient backendClient) {
+    default void fetchSuccess(final BackendClient backendClient) {
         final ApiRequest createRequest = ApiRequest.createResourceRequest().with(resourceType("payment"));
 
-        final RawResponse createResponse = backendClient.execute(createRequest);
-        createResponse.isSuccess();
+        final RawResponse createResponse = backendClient.execute(createRequest).isSuccess();
         final String id = createResponse.fieldValue("$.id");
 
 

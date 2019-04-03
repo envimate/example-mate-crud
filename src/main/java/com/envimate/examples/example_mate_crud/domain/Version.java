@@ -19,30 +19,35 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.usecases.resource.list;
+package com.envimate.examples.example_mate_crud.domain;
 
-import com.envimate.examples.example_mate_crud.usecases.resource.ResourceDTO;
-import com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator;
+import com.envimate.examples.example_mate_crud.validation.LengthValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
-import static com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator.ensureNotNull;
-
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public final class ListResourceDTO {
-    public final List<ResourceDTO> data;
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class Version {
+    private final String value;
 
-    public static ListResourceDTO listResourceDTO(final ResourceDTO[] data) {
-        ensureNotNull(data, "ListData");
-        return new ListResourceDTO(Optional.ofNullable(data).map(Arrays::asList).orElse(new LinkedList<>()));
+    public static Version version(final String value) {
+        //TODO version INTEGER?..
+        final String validated = LengthValidator.ensureMinLength(value, 1, "Version");
+        return new Version(validated);
+    }
+
+    public static Version generate() {
+        return Version.version("0");
+    }
+
+    public static Version next(final Version version) {
+        return Version.version(Integer.toString(Integer.valueOf(version.value) +1));
+    }
+
+    public String internalValue() {
+        return this.value;
     }
 }

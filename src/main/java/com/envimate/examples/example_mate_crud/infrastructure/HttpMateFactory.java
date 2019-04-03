@@ -24,8 +24,9 @@ package com.envimate.examples.example_mate_crud.infrastructure;
 import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResource;
 import com.envimate.examples.example_mate_crud.usecases.resource.fetch.FetchResource;
-import com.envimate.examples.example_mate_crud.usecases.resource.fetch.ResourceNotFoundException;
+import com.envimate.examples.example_mate_crud.usecases.resource.ResourceNotFoundException;
 import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResource;
+import com.envimate.examples.example_mate_crud.usecases.resource.update.UpdateResource;
 import com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException;
 import com.envimate.httpmate.HttpMate;
 import com.envimate.httpmate.convenience.Http;
@@ -37,8 +38,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import static com.envimate.httpmate.convenience.cors.CorsHandler.handleCorsOptionsRequests;
-import static com.envimate.httpmate.request.HttpRequestMethod.GET;
-import static com.envimate.httpmate.request.HttpRequestMethod.POST;
+import static com.envimate.httpmate.request.HttpRequestMethod.*;
 
 @ToString
 @EqualsAndHashCode
@@ -62,6 +62,8 @@ final class HttpMateFactory {
                 .forRequestPath("api/resource").andRequestMethod(POST)
                 .servingTheUseCase(FetchResource.class)
                 .forRequestPath("api/resource/<id>").andRequestMethod(GET)
+                .servingTheUseCase(UpdateResource.class)
+                .forRequestPath("api/resource/<id>").andRequestMethod(PUT)
                 .handlingOptionsRequestsUsing(handleCorsOptionsRequests())
                 .obtainingUseCaseInstancesUsing(
                         (useCase, webserviceRequest) -> this.injector.getInstance(useCase.useCaseClass())

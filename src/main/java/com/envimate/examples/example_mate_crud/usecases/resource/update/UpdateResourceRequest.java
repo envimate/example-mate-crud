@@ -19,21 +19,28 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.domain.repository;
+package com.envimate.examples.example_mate_crud.usecases.resource.update;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
-import com.envimate.examples.example_mate_crud.domain.Resource;
 import com.envimate.examples.example_mate_crud.domain.ResourceType;
-import com.envimate.examples.example_mate_crud.domain.Version;
+import com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-import java.util.List;
+import static com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator.ensureNotNull;
 
-public interface ResourceRepository {
-    List<Resource> all();
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class UpdateResourceRequest {
+    public final Id id;
+    public final ResourceType resourceType;
 
-    void create(Resource resource);
-
-    Resource find(Id id);
-
-    Resource update(Id id, Version version, ResourceType resourceType);
+    public static UpdateResourceRequest updateResourceRequest(final Id id, final ResourceType resourceType) {
+        ensureNotNull(id, "Id");
+        ensureNotNull(resourceType, "ResourceType");
+        return new UpdateResourceRequest(id, resourceType);
+    }
 }

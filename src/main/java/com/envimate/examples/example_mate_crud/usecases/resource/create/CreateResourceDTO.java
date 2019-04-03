@@ -22,10 +22,13 @@
 package com.envimate.examples.example_mate_crud.usecases.resource.create;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
+import com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import static com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator.ensureNotNull;
 
 @ToString
 @EqualsAndHashCode
@@ -34,6 +37,7 @@ public final class CreateResourceDTO {
     public final Id id;
 
     public static CreateResourceDTO createResourceDTO(final Id id) {
+        ensureNotNull(id, "Id");
         return new CreateResourceDTO(id);
     }
 }

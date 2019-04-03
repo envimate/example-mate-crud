@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.usecases.resource.fetch;
+package com.envimate.examples.example_mate_crud.usecases.resource;
 
 public final class ResourceNotFoundException extends RuntimeException {
     private static final long serialVersionUID = -702655807628721573L;
@@ -28,12 +28,12 @@ public final class ResourceNotFoundException extends RuntimeException {
         super(message);
     }
 
-    static ResourceNotFoundException resourceNotFoundException(
+    public static ResourceNotFoundException resourceNotFoundException(
             final String format, final Object... args) {
         return new ResourceNotFoundException(String.format(format, args));
     }
 
-    static ResourceNotFoundException resourceNotFoundException(
+    public static ResourceNotFoundException resourceNotFoundException(
             final Exception cause, final String format, final Object... args) {
         return new ResourceNotFoundException(String.format(format, args));
     }

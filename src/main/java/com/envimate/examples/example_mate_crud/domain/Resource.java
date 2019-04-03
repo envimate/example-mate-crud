@@ -21,10 +21,15 @@
 
 package com.envimate.examples.example_mate_crud.domain;
 
+import com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import java.util.Map;
+
+import static com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator.ensureNotNull;
 
 @ToString
 @EqualsAndHashCode
@@ -32,8 +37,12 @@ import lombok.ToString;
 public final class Resource {
     public final Id id;
     public final ResourceType resourceType;
+    public final Version version;
 
-    public static Resource resource(final Id id, final ResourceType resourceType) {
-        return new Resource(id, resourceType);
+    public static Resource resource(final Id id, final ResourceType resourceType, final Version version) {
+        ensureNotNull(id, "Id");
+        ensureNotNull(resourceType, "ResourceType");
+        ensureNotNull(version, "Version");
+        return new Resource(id, resourceType, version);
     }
 }

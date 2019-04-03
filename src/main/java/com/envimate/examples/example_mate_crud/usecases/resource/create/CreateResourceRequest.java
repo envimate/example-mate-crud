@@ -27,6 +27,8 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator.ensureNotNull;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -34,6 +36,7 @@ public final class CreateResourceRequest {
     public final ResourceType resourceType;
 
     public static CreateResourceRequest createResourceRequest(final ResourceType resourceType) {
+        ensureNotNull(resourceType, "ResourceType");
         return new CreateResourceRequest(resourceType);
     }
 }

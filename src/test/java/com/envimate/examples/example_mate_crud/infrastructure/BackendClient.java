@@ -54,7 +54,9 @@ public class BackendClient {
             httpRequest = Unirest.post(url);
         } else if ("DELETE".equalsIgnoreCase(httpMethod)) {
             httpRequest = Unirest.delete(url);
-        } else {
+        } else if ("PUT".equalsIgnoreCase(httpMethod)) {
+            httpRequest = Unirest.put(url);
+        }else {
             throw new UnsupportedOperationException("Only GET and POST http methods are supported at this point");
         }
 

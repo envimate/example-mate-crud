@@ -163,11 +163,11 @@
 					<configuration>
 						<compilerArgs>
 							<arg>-parameters</arg>
-							<arg>-Werror</arg>
-							<arg>-Xlint:all</arg>
-							<!-- Avoids Warning:java: No processor claimed any of these annotations: org.junit.jupiter.api.Test... -->
-							<arg>-Xlint:-processing</arg>
-							<arg>-Xlint:-varargs</arg>
+							<!--<arg>-Werror</arg>-->
+							<!--<arg>-Xlint:all</arg>-->
+							<!--&lt;!&ndash; Avoids Warning:java: No processor claimed any of these annotations: org.junit.jupiter.api.Test... &ndash;&gt;-->
+							<!--<arg>-Xlint:-processing</arg>-->
+							<!--<arg>-Xlint:-varargs</arg>-->
 						</compilerArgs>
 						<release>11</release>
 					</configuration>
