@@ -11,8 +11,13 @@ public class UpdateResourceRequestBuilder {
     public static ApiRequestBodyPropertyProvider resourceType(final String resourceType) {
         return jsonObject -> jsonObject.put("resourceType", resourceType);
     }
+
     public static ApiRequestBodyPropertyProvider id(final String id) {
         return jsonObject -> jsonObject.put("id", id);
+    }
+
+    public static ApiRequestBodyPropertyProvider version(final String version) {
+        return jsonObject -> jsonObject.put("version", version);
     }
 
     public JSONObject build() {

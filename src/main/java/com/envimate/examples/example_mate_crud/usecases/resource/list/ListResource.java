@@ -38,7 +38,7 @@ public final class ListResource {
     public ListResourceDTO listResources() {
         final List<Resource> all = this.resourceRepository.all();
         final List<ResourceDTO> resourceDTOList = all.stream()
-                .map(resource -> ResourceDTO.resourceDTO(resource.id, resource.resourceType))
+                .map(resource -> ResourceDTO.resourceDTO(resource.id, resource.resourceType, resource.version))
                 .collect(Collectors.toList());
 
         return new ListResourceDTO(resourceDTOList);

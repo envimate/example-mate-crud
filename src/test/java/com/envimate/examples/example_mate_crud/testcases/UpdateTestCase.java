@@ -28,8 +28,7 @@ import com.envimate.examples.example_mate_crud.infrastructure.raw_request.ApiReq
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static com.envimate.examples.example_mate_crud.infrastructure.raw_request.UpdateResourceRequestBuilder.resourceType;
-import static com.envimate.examples.example_mate_crud.infrastructure.raw_request.UpdateResourceRequestBuilder.id;
+import static com.envimate.examples.example_mate_crud.infrastructure.raw_request.UpdateResourceRequestBuilder.*;
 
 
 public interface UpdateTestCase {
@@ -41,23 +40,22 @@ public interface UpdateTestCase {
         final RawResponse createResponse = backendClient.execute(createRequest).isSuccess();
         final String id = createResponse.fieldValue("$.id");
 
-        final ApiRequest updateRequest = ApiRequest.updateResourceRequest(id).with(resourceType("newResourceType")).with(id(id));
+        final ApiRequest updateRequest = ApiRequest.updateResourceRequest(id)
+                .with(resourceType("newResourceType"))
+                .with(id(id))
+                .with(version("0"));
 
         backendClient.execute(updateRequest)
-                .isSuccess()
-                .andVerifyThat(rawResponse -> {
-                    final String updatedResourceId = rawResponse.fieldValue("$.id");
-                    final String resourceType = rawResponse.fieldValue("$.resourceType");
-                    Assertions.assertEquals(id, updatedResourceId, "The updated object should be the one requested");
-                    Assertions.assertEquals(resourceType, "newResourceType", "The updated object is returned incorrectly");
-                });
+                .isSuccess();
 
         final ApiRequest fetchRequest = ApiRequest.fetchResourceRequest(id);
         backendClient.execute(fetchRequest)
                 .isSuccess()
                 .andVerifyThat(rawResponse -> {
                     final String resourceType = rawResponse.fieldValue("$.resourceType");
-                    Assertions.assertEquals(resourceType, "newResourceType", "The fetched object after update is returned incorrectly");
+                    final String version = rawResponse.fieldValue("$.version");
+                    Assertions.assertEquals("newResourceType", resourceType, "The fetched object after update is returned incorrectly");
+                    Assertions.assertEquals("1", version, "The version of the new object is incorrect");
                 });
     }
 

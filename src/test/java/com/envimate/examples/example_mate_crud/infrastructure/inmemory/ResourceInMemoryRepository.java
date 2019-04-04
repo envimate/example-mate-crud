@@ -29,10 +29,7 @@ import com.envimate.examples.example_mate_crud.domain.repository.ResourceReposit
 import com.envimate.mapmate.deserialization.Deserializer;
 import com.envimate.mapmate.serialization.Serializer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class ResourceInMemoryRepository implements ResourceRepository {
     private static final int INITIAL_CAPACITY = 100;
@@ -63,15 +60,25 @@ public final class ResourceInMemoryRepository implements ResourceRepository {
     }
 
     @Override
-    public Resource update(final Id id, final Version version, final Resource resource) {
-        final Resource oldResource = db.get(id);
+    public void update(final Resource resource) {
+        final Resource oldResource = db.get(resource.id);
         if(oldResource == null) {
-            throw new UnsupportedOperationException("//TODO");
+            throw new UnsupportedOperationException(String.format("Requested object(%s) not exist", resource));
         }
-        //todo next?...
-        final Resource newResource = Resource.resource(id, resourceType, Version.next(version));
-        db.put(id, newResource);
-        return clone(newResource);
+        if(!oldResource.version.equals(resource.version)) {
+            throw new ConcurrentModificationException(String.format("Version mismatch between existing(%s) and requested(%s)", oldResource, resource));
+        }
+
+        final Resource newResource = clone(resource, resource.version.next());
+        db.put(resource.id, newResource);
+    }
+
+    private Resource clone(final Resource resource, final Version nextVersion) {
+        final String serialized = this.serializer.serialize(resource);
+        return this.deserializer.deserialize(serialized, Resource.class, injector -> {
+            injector.put("version", nextVersion);
+            return injector;
+        });
     }
 
     private Resource clone(final Resource resource) {

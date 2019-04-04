@@ -38,17 +38,16 @@ public final class Version {
         return new Version(validated);
     }
 
-    public static Version initialVersion() {
-        return Version.version("0");
-    }
+//    public static Version initialVersion() {
+//        return Version.version("0");
+//    }
 
-    //todo not static NEW!
     public Version next() {
         final String nextValue = String.valueOf(this.value + 1);
         return Version.version(nextValue);
     }
 
-    public int internalValue() {
-        return this.value;
+    public String internalValue() {
+        return String.valueOf(this.value);
     }
 }

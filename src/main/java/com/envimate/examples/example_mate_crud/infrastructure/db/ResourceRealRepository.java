@@ -46,7 +46,8 @@ public class ResourceRealRepository implements ResourceRepository {
     }
 
     @Override
-    public Resource update(final Id id, final Version version, final ResourceType resourceType) {
-        return null;
+    public void update(final Resource resource) {
+
     }
+
 }

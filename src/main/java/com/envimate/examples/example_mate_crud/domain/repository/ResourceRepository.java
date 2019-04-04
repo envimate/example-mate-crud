@@ -35,5 +35,5 @@ public interface ResourceRepository {
 
     Resource find(Id id);
 
-    Resource update(Id id, Version version, ResourceType resourceType);
+    void update(Resource resource);
 }

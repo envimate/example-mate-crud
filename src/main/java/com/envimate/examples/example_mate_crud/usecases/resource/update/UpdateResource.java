@@ -38,7 +38,7 @@ public final class UpdateResource {
         this.resourceRepository = resourceRepository;
     }
 
-    public ResourceDTO updateResource(final Id id, final UpdateResourceRequest request) {
+    public void updateResource(final Id id, final UpdateResourceRequest request) {
         if (!request.id.equals(id)) {
             throw customTypeValidationException(String.format(
                     "The provided id(%s) does not correspond to the id in the request(%s)",
@@ -51,8 +51,7 @@ public final class UpdateResource {
         if(resource == null) {
             throw resourceNotFoundException("Resource for id %s not found", id.internalValue());
         }
-        //todo fetchResourceDTO?..
-        final Resource updatedResource = this.resourceRepository.update(id, resource.version, request.resourceType);
-        return resourceDTO(updatedResource.id, updatedResource.resourceType);
+        
+        this.resourceRepository.update(Resource.resource(id, request.resourceType, request.version));
     }
 }

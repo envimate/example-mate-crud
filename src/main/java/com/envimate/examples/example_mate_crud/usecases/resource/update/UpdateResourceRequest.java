@@ -23,6 +23,7 @@ package com.envimate.examples.example_mate_crud.usecases.resource.update;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.domain.ResourceType;
+import com.envimate.examples.example_mate_crud.domain.Version;
 import com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -37,10 +38,12 @@ import static com.envimate.examples.example_mate_crud.validation.RequiredParamet
 public final class UpdateResourceRequest {
     public final Id id;
     public final ResourceType resourceType;
+    public final Version version;
 
-    public static UpdateResourceRequest updateResourceRequest(final Id id, final ResourceType resourceType) {
+    public static UpdateResourceRequest updateResourceRequest(final Id id, final ResourceType resourceType,
+                                                              final Version version) {
         ensureNotNull(id, "Id");
         ensureNotNull(resourceType, "ResourceType");
-        return new UpdateResourceRequest(id, resourceType);
+        return new UpdateResourceRequest(id, resourceType, version);
     }
 }
