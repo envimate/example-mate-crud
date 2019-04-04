@@ -9,11 +9,12 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class EndToEndReference {
+public class BearerCode {
     private final String value;
 
-    public static EndToEndReference endToEndReference(final String value) {
-        final String validated = LengthValidator.ensureMinLength(value, 1, "value of E2E reference");
-        return new EndToEndReference(validated);
+    public static BearerCode bearerCode(final String value) {
+        final String validated = LengthValidator.ensureMinLength(value, 1, "value of BearerCode");
+        return new BearerCode(validated);
     }
+
 }
