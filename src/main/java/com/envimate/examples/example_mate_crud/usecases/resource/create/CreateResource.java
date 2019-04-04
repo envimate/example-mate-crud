@@ -36,7 +36,7 @@ public final class CreateResource {
     }
 
     public CreateResourceDTO createResource(final CreateResourceRequest createResourceRequest) {
-        final Resource newResource = Resource.resource(Id.newUniqueId(), createResourceRequest.resourceType, Version.generate());
+        final Resource newResource = Resource.resource(Id.newUniqueId(), createResourceRequest.resourceType, Version.initialVersion());
         this.resourceRepository.create(newResource);
 
         return createResourceDTO(newResource.id);

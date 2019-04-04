@@ -63,7 +63,7 @@ public final class ResourceInMemoryRepository implements ResourceRepository {
     }
 
     @Override
-    public Resource update(final Id id, final Version version, final ResourceType resourceType) {
+    public Resource update(final Id id, final Version version, final Resource resource) {
         final Resource oldResource = db.get(id);
         if(oldResource == null) {
             throw new UnsupportedOperationException("//TODO");

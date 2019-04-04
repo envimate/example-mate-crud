@@ -19,36 +19,31 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.domain;
+package com.envimate.examples.example_mate_crud.validation;
 
-import com.envimate.examples.example_mate_crud.validation.NumericValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException.customTypeValidationException;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Version {
-    private final int value;
+public final class NumericValidator {
 
-    public static Version version(final String value) {
-        final int validated = NumericValidator.ensurePositiveInteger(value, "value of Version");
-        return new Version(validated);
-    }
-
-    public static Version initialVersion() {
-        return Version.version("0");
-    }
-
-    //todo not static NEW!
-    public Version next() {
-        final String nextValue = String.valueOf(this.value + 1);
-        return Version.version(nextValue);
-    }
-
-    public int internalValue() {
-        return this.value;
+    public static int ensurePositiveInteger(final String value, final String description) {
+        final String sanitized = SanityValidator.sanitized(value, description);
+        try {
+            int parsedValue = Integer.parseInt(sanitized);
+            if (parsedValue < 0) {
+                throw customTypeValidationException("%s is negative. Only positivity allowed here.", description);
+            }
+            return parsedValue;
+        } catch (final NumberFormatException exception) {
+            throw customTypeValidationException("%s not a number",
+                    description);
+        }
     }
 }
