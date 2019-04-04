@@ -21,7 +21,7 @@
 
 package com.envimate.examples.example_mate_crud.domain;
 
-import com.envimate.examples.example_mate_crud.validation.LengthValidator;
+import com.envimate.examples.example_mate_crud.validation.NumericValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -31,23 +31,24 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Version {
-    private final String value;
+    private final int value;
 
     public static Version version(final String value) {
-        //TODO version INTEGER?..
-        final String validated = LengthValidator.ensureMinLength(value, 1, "Version");
+        final int validated = NumericValidator.ensurePositiveInteger(value, "value of Version");
         return new Version(validated);
     }
 
-    public static Version generate() {
+    public static Version initialVersion() {
         return Version.version("0");
     }
 
-    public static Version next(final Version version) {
-        return Version.version(Integer.toString(Integer.valueOf(version.value) +1));
+    //todo not static NEW!
+    public Version next() {
+        final String nextValue = String.valueOf(this.value + 1);
+        return Version.version(nextValue);
     }
 
-    public String internalValue() {
+    public int internalValue() {
         return this.value;
     }
 }

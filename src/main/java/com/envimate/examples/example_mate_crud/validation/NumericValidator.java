@@ -37,21 +37,24 @@ public final class NumericValidator {
         final String sanitized = SanityValidator.sanitized(value, description);
         try {
             return Double.parseDouble(sanitized);
-        } catch(NumberFormatException nfm) {
+        } catch (NumberFormatException nfm) {
             throw customTypeValidationException(nfm, "%s is not a double.",
                     description);
 
         }
     }
 
-    public static int ensureInteger(final String value, final String description) {
+    public static int ensurePositiveInteger(final String value, final String description) {
         final String sanitized = SanityValidator.sanitized(value, description);
         try {
-            return Integer.parseInt(sanitized);
-        } catch(NumberFormatException nfm) {
-            throw customTypeValidationException(nfm, "%s is not an Integer.",
+            int parsedValue = Integer.parseInt(sanitized);
+            if (parsedValue < 0) {
+                throw customTypeValidationException("%s is negative. Only positivity allowed here.", description);
+            }
+            return parsedValue;
+        } catch (final NumberFormatException exception) {
+            throw customTypeValidationException("%s not a number",
                     description);
-
         }
     }
 }

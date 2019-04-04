@@ -13,7 +13,7 @@ public class AccountType {
     private final int value;
 
     public static AccountType accountType(final String value) {
-        final int validated = NumericValidator.ensureInteger(value, "value of AccountType");
+        final int validated = NumericValidator.ensurePositiveInteger(value, "value of AccountType");
         return new AccountType(validated);
     }
 }
