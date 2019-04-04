@@ -22,10 +22,13 @@
 package com.envimate.examples.example_mate_crud.domain;
 
 import com.envimate.examples.example_mate_crud.validation.LengthValidator;
+import com.envimate.examples.example_mate_crud.validation.WhitelistValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import java.util.List;
 
 @ToString
 @EqualsAndHashCode
@@ -34,7 +37,7 @@ public final class ResourceType {
     private final String value;
 
     public static ResourceType resourceType(final String value) {
-        final String validated = LengthValidator.ensureMinLength(value, 1, "ResourceType");
+        final String validated = WhitelistValidator.ensureOneOf(value, List.of("Payment"), "ResourceType");
         return new ResourceType(validated);
     }
 

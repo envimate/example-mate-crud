@@ -69,9 +69,9 @@ public final class ResourceInMemoryRepository implements ResourceRepository {
             throw new UnsupportedOperationException("//TODO");
         }
         //todo next?...
-        final Resource newResource = Resource.resource(id, resourceType, Version.next(version));
-        db.put(id, newResource);
-        return clone(newResource);
+//        final Resource newResource = Resource.resource(id, resourceType, Version.next(version), organisationId);
+//        db.put(id, newResource);
+        return null;
     }
 
     private Resource clone(final Resource resource) {

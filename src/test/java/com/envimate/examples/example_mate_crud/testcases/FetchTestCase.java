@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
+import static com.envimate.examples.example_mate_crud.infrastructure.raw_request.CreateResourceRequestBuilder.organisationId;
 import static com.envimate.examples.example_mate_crud.infrastructure.raw_request.CreateResourceRequestBuilder.resourceType;
 
 public interface FetchTestCase {
@@ -58,7 +59,8 @@ public interface FetchTestCase {
 
     @Test
     default void fetchSuccess(final BackendClient backendClient) {
-        final ApiRequest createRequest = ApiRequest.createResourceRequest().with(resourceType("payment"));
+        final String organisationId = UUID.randomUUID().toString();
+        final ApiRequest createRequest = ApiRequest.createResourceRequest().with(resourceType("Payment")).with(organisationId(organisationId));
 
         final RawResponse createResponse = backendClient.execute(createRequest).isSuccess();
         final String id = createResponse.fieldValue("$.id");
@@ -70,8 +72,9 @@ public interface FetchTestCase {
                 .execute(fetchRequest)
                 .isSuccess()
                 .andVerifyThat(rawResponse -> {
-                            Assertions.assertEquals("payment", rawResponse.fieldValue("$.resourceType"), "Unexpected resourceType");
+                            Assertions.assertEquals("Payment", rawResponse.fieldValue("$.type"), "Unexpected type");
                             Assertions.assertEquals(id, rawResponse.fieldValue("$.id"), "Wrong ID");
+                            Assertions.assertEquals(organisationId, rawResponse.fieldValue("$.organisation_id"), "Wrong organisation ID");
                         }
                 );
     }

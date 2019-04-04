@@ -9,7 +9,10 @@ public class CreateResourceRequestBuilder {
     private final JSONObject jsonObject = new JSONObject();
 
     public static ApiRequestBodyPropertyProvider resourceType(final String resourceType) {
-        return jsonObject -> jsonObject.put("resourceType", resourceType);
+        return jsonObject -> jsonObject.put("type", resourceType);
+    }
+    public static ApiRequestBodyPropertyProvider organisationId(final String organisationId) {
+        return jsonObject -> jsonObject.put("organisation_id", organisationId);
     }
 
     public JSONObject build() {

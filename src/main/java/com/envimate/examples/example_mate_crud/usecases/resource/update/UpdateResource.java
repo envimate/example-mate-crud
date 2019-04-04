@@ -53,6 +53,6 @@ public final class UpdateResource {
         }
         //todo fetchResourceDTO?..
         final Resource updatedResource = this.resourceRepository.update(id, resource.version, request.resourceType);
-        return resourceDTO(updatedResource.id, updatedResource.resourceType);
+        return resourceDTO(updatedResource.id, updatedResource.resourceType, updatedResource.organisationId);
     }
 }

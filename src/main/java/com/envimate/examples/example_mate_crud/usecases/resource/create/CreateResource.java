@@ -22,6 +22,7 @@
 package com.envimate.examples.example_mate_crud.usecases.resource.create;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
+import com.envimate.examples.example_mate_crud.domain.OrganisationId;
 import com.envimate.examples.example_mate_crud.domain.Resource;
 import com.envimate.examples.example_mate_crud.domain.Version;
 import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
@@ -36,7 +37,11 @@ public final class CreateResource {
     }
 
     public CreateResourceDTO createResource(final CreateResourceRequest createResourceRequest) {
-        final Resource newResource = Resource.resource(Id.newUniqueId(), createResourceRequest.resourceType, Version.generate());
+        final Resource newResource = Resource.resource(Id.newUniqueId(),
+                createResourceRequest.type,
+                Version.generate(),
+                createResourceRequest.organisationId
+        );
         this.resourceRepository.create(newResource);
 
         return createResourceDTO(newResource.id);

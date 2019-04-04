@@ -47,7 +47,7 @@ public interface UpdateTestCase {
                 .isSuccess()
                 .andVerifyThat(rawResponse -> {
                     final String updatedResourceId = rawResponse.fieldValue("$.id");
-                    final String resourceType = rawResponse.fieldValue("$.resourceType");
+                    final String resourceType = rawResponse.fieldValue("$.type");
                     Assertions.assertEquals(id, updatedResourceId, "The updated object should be the one requested");
                     Assertions.assertEquals(resourceType, "newResourceType", "The updated object is returned incorrectly");
                 });
@@ -56,7 +56,7 @@ public interface UpdateTestCase {
         backendClient.execute(fetchRequest)
                 .isSuccess()
                 .andVerifyThat(rawResponse -> {
-                    final String resourceType = rawResponse.fieldValue("$.resourceType");
+                    final String resourceType = rawResponse.fieldValue("$.type");
                     Assertions.assertEquals(resourceType, "newResourceType", "The fetched object after update is returned incorrectly");
                 });
     }

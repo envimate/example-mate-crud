@@ -19,11 +19,8 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.usecases.resource;
+package com.envimate.examples.example_mate_crud.domain;
 
-import com.envimate.examples.example_mate_crud.domain.Id;
-import com.envimate.examples.example_mate_crud.domain.OrganisationId;
-import com.envimate.examples.example_mate_crud.domain.ResourceType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +29,22 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ResourceDTO {
-    public final Id id;
-    public final ResourceType type;
-    public final OrganisationId organisationId;
-
-    public static ResourceDTO resourceDTO(final Id id,
-                                          final ResourceType resourceType,
-                                          final OrganisationId organisationId) {
-        return new ResourceDTO(id, resourceType, organisationId);
-    }
+public final class Attributes {
+    public final Amount amount;
+    public final BeneficiaryParty beneficiaryParty;
+    public final ChargesInformation chargesInformation;
+    public final Currency currency;
+    public final DebtorParty deptorParty;
+    public final EndToEndReference endToEndReference;
+    public final ForeignExchange foreignExchange;
+    public final NumbericReference numbericReference;
+    public final PaymentId paymentId;
+    public final PaymentPurpose paymentPurpose;
+    public final PaymentScheme paymentScheme;
+    public final PaymentType paymentType;
+    public final ProcessingDate processingDate;
+    public final Reference reference;
+    public final SchemePaymentSubType schemePaymentSubType;
+    public final SchemePaymentType schemePaymentType;
+    public final SponsorParty sponsorParty;
 }

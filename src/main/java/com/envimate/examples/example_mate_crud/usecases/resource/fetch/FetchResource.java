@@ -42,6 +42,6 @@ public final class FetchResource {
             throw ResourceNotFoundException.resourceNotFoundException("Resource for id %s not found", id.internalValue());
         }
         //todo fetchResourceDTO?..
-        return resourceDTO(resource.id, resource.resourceType);
+        return resourceDTO(resource.id, resource.resourceType, resource.organisationId);
     }
 }

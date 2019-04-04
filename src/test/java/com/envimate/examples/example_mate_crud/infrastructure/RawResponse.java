@@ -43,7 +43,7 @@ public class RawResponse {
     private final DocumentContext parsedResponse;
 
     private String assertionMessage(final String additionalInfo) {
-        return String.format("%s. Request: %s. Response: %s.", additionalInfo, apiRequest, parsedResponse);
+        return String.format("%s. Request: %s. Response: Body(%s), StatusText(%s).", additionalInfo, apiRequest, jsonResponse.getBody(), jsonResponse.getStatusText());
     }
 
     public static RawResponse rawResponse(final ApiRequest apiRequest, final HttpResponse<String> jsonResponse) {

@@ -19,27 +19,39 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.usecases.resource;
+package com.envimate.examples.example_mate_crud.validation;
 
-import com.envimate.examples.example_mate_crud.domain.Id;
-import com.envimate.examples.example_mate_crud.domain.OrganisationId;
-import com.envimate.examples.example_mate_crud.domain.ResourceType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException.customTypeValidationException;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ResourceDTO {
-    public final Id id;
-    public final ResourceType type;
-    public final OrganisationId organisationId;
+public final class NumericValidator {
+    public static double ensureDouble(final String value,
+                                      final String description) {
+        final String sanitized = SanityValidator.sanitized(value, description);
+        try {
+            return Double.parseDouble(sanitized);
+        } catch(NumberFormatException nfm) {
+            throw customTypeValidationException(nfm, "%s is not a double.",
+                    description);
 
-    public static ResourceDTO resourceDTO(final Id id,
-                                          final ResourceType resourceType,
-                                          final OrganisationId organisationId) {
-        return new ResourceDTO(id, resourceType, organisationId);
+        }
+    }
+
+    public static int ensureInteger(final String value, final String description) {
+        final String sanitized = SanityValidator.sanitized(value, description);
+        try {
+            return Integer.parseInt(sanitized);
+        } catch(NumberFormatException nfm) {
+            throw customTypeValidationException(nfm, "%s is not an Integer.",
+                    description);
+
+        }
     }
 }

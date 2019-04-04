@@ -21,6 +21,7 @@
 
 package com.envimate.examples.example_mate_crud.usecases.resource.create;
 
+import com.envimate.examples.example_mate_crud.domain.OrganisationId;
 import com.envimate.examples.example_mate_crud.domain.ResourceType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -33,10 +34,12 @@ import static com.envimate.examples.example_mate_crud.validation.RequiredParamet
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CreateResourceRequest {
-    public final ResourceType resourceType;
+    public final ResourceType type;
+    public final OrganisationId organisationId;
 
-    public static CreateResourceRequest createResourceRequest(final ResourceType resourceType) {
-        ensureNotNull(resourceType, "ResourceType");
-        return new CreateResourceRequest(resourceType);
+    public static CreateResourceRequest createResourceRequest(final ResourceType type, final OrganisationId organisationId) {
+        ensureNotNull(type, "CreateResourceRequest: ResourceType");
+        ensureNotNull(organisationId, "CreateResourceRequest: OrganisationId");
+        return new CreateResourceRequest(type, organisationId);
     }
 }

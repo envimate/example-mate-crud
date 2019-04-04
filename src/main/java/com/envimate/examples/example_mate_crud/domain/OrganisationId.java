@@ -19,27 +19,28 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.usecases.resource;
+package com.envimate.examples.example_mate_crud.domain;
 
-import com.envimate.examples.example_mate_crud.domain.Id;
-import com.envimate.examples.example_mate_crud.domain.OrganisationId;
-import com.envimate.examples.example_mate_crud.domain.ResourceType;
+import com.envimate.examples.example_mate_crud.validation.UuidValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.UUID;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ResourceDTO {
-    public final Id id;
-    public final ResourceType type;
-    public final OrganisationId organisationId;
+public final class OrganisationId {
+    private final UUID value;
 
-    public static ResourceDTO resourceDTO(final Id id,
-                                          final ResourceType resourceType,
-                                          final OrganisationId organisationId) {
-        return new ResourceDTO(id, resourceType, organisationId);
+    public static OrganisationId organisationId(final String value) {
+        final UUID validated = UuidValidator.ensureUuid(value, "Id");
+        return new OrganisationId(validated);
+    }
+
+    public String internalValue() {
+        return this.value.toString();
     }
 }
