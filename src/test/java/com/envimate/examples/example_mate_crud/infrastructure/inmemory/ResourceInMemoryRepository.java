@@ -23,7 +23,6 @@ package com.envimate.examples.example_mate_crud.infrastructure.inmemory;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.domain.Resource;
-import com.envimate.examples.example_mate_crud.domain.ResourceType;
 import com.envimate.examples.example_mate_crud.domain.Version;
 import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
 import com.envimate.mapmate.deserialization.Deserializer;

@@ -38,9 +38,9 @@ public final class Version {
         return new Version(validated);
     }
 
-//    public static Version initialVersion() {
-//        return Version.version("0");
-//    }
+    public static Version initialVersion() {
+        return Version.version("0");
+    }
 
     public Version next() {
         final String nextValue = String.valueOf(this.value + 1);

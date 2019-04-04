@@ -24,7 +24,6 @@ package com.envimate.examples.example_mate_crud.usecases.resource.update;
 import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.domain.ResourceType;
 import com.envimate.examples.example_mate_crud.domain.Version;
-import com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

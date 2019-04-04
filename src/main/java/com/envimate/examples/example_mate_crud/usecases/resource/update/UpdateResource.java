@@ -24,10 +24,7 @@ package com.envimate.examples.example_mate_crud.usecases.resource.update;
 import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.domain.Resource;
 import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
-import com.envimate.examples.example_mate_crud.usecases.resource.ResourceDTO;
-import com.envimate.examples.example_mate_crud.usecases.resource.ResourceNotFoundException;
 
-import static com.envimate.examples.example_mate_crud.usecases.resource.ResourceDTO.resourceDTO;
 import static com.envimate.examples.example_mate_crud.usecases.resource.ResourceNotFoundException.resourceNotFoundException;
 import static com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException.customTypeValidationException;
 
@@ -48,10 +45,10 @@ public final class UpdateResource {
         }
 
         final Resource resource = this.resourceRepository.find(id);
-        if(resource == null) {
+        if (resource == null) {
             throw resourceNotFoundException("Resource for id %s not found", id.internalValue());
         }
-        
+
         this.resourceRepository.update(Resource.resource(id, request.resourceType, request.version));
     }
 }

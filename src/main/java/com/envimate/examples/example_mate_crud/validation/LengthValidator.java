@@ -21,17 +21,17 @@
 
 package com.envimate.examples.example_mate_crud.validation;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException.customTypeValidationException;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LengthValidator {
+    private LengthValidator() {
+    }
+
     public static String ensureLength(final String value,
                                       final Integer minLength, final Integer maxLength,
                                       final String description) {
