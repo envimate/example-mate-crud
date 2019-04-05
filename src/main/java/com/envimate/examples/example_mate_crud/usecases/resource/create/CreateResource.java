@@ -40,7 +40,8 @@ public final class CreateResource {
         final Resource newResource = Resource.resource(Id.newUniqueId(),
                 createResourceRequest.type,
                 Version.initialVersion(),
-                createResourceRequest.organisationId);
+                createResourceRequest.organisationId,
+                createResourceRequest.attributes);
         this.resourceRepository.create(newResource);
 
         return createResourceDTO(newResource.id);

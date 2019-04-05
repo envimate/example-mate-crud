@@ -24,6 +24,7 @@ package com.envimate.examples.example_mate_crud.usecases.resource;
 import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.domain.OrganisationId;
 import com.envimate.examples.example_mate_crud.domain.ResourceType;
+import com.envimate.examples.example_mate_crud.domain.Version;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +35,14 @@ import lombok.ToString;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ResourceDTO {
     public final Id id;
-    public final ResourceType type;
+    public final ResourceType resourceType;
+    public final Version version;
     public final OrganisationId organisationId;
 
     public static ResourceDTO resourceDTO(final Id id,
                                           final ResourceType resourceType,
+                                          final Version version,
                                           final OrganisationId organisationId) {
-        return new ResourceDTO(id, resourceType, organisationId);
+        return new ResourceDTO(id, resourceType, version, organisationId);
     }
 }

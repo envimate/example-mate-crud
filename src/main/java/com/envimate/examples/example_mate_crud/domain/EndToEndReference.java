@@ -16,4 +16,7 @@ public class EndToEndReference {
         final String validated = LengthValidator.ensureMinLength(value, 1, "value of E2E reference");
         return new EndToEndReference(validated);
     }
+    public String internalValue() {
+        return this.value;
+    }
 }

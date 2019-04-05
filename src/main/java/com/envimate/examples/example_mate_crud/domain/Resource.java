@@ -41,11 +41,13 @@ public final class Resource {
     public static Resource resource(final Id id,
                                     final ResourceType resourceType,
                                     final Version version,
-                                    final OrganisationId organisationId) {
+                                    final OrganisationId organisationId,
+                                    final Attributes attributes) {
         ensureNotNull(id, "Id");
         ensureNotNull(resourceType, "ResourceType");
         ensureNotNull(version, "Version");
         ensureNotNull(organisationId, "OrganisationId");
-        return new Resource(id, resourceType, version, organisationId);
+        ensureNotNull(attributes, "Attributes");
+        return new Resource(id, resourceType, version, organisationId, attributes);
     }
 }

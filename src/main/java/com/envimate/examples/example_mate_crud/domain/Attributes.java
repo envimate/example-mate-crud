@@ -21,10 +21,13 @@
 
 package com.envimate.examples.example_mate_crud.domain;
 
+import com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import static com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator.ensureNotNull;
 
 @ToString
 @EqualsAndHashCode
@@ -37,7 +40,7 @@ public final class Attributes {
     public final DebtorParty deptorParty;
     public final EndToEndReference endToEndReference;
     public final ForeignExchange foreignExchange;
-    public final NumbericReference numbericReference;
+    public final NumericReference numericReference;
     public final PaymentId paymentId;
     public final PaymentPurpose paymentPurpose;
     public final PaymentScheme paymentScheme;
@@ -47,4 +50,59 @@ public final class Attributes {
     public final SchemePaymentSubType schemePaymentSubType;
     public final SchemePaymentType schemePaymentType;
     public final SponsorParty sponsorParty;
+
+    public static Attributes attributes(
+            final Amount amount,
+            final BeneficiaryParty beneficiaryParty,
+            final ChargesInformation chargesInformation,
+            final Currency currency,
+            final DebtorParty deptorParty,
+            final EndToEndReference endToEndReference,
+            final ForeignExchange foreignExchange,
+            final NumericReference numericReference,
+            final PaymentId paymentId,
+            final PaymentPurpose paymentPurpose,
+            final PaymentScheme paymentScheme,
+            final PaymentType paymentType,
+            final ProcessingDate processingDate,
+            final Reference reference,
+            final SchemePaymentSubType schemePaymentSubType,
+            final SchemePaymentType schemePaymentType,
+            final SponsorParty sponsorParty) {
+        ensureNotNull(amount, "amount of Attributes");
+        ensureNotNull(beneficiaryParty, "beneficiaryParty of Attributes");
+        ensureNotNull(chargesInformation, " chargesInformation of Attributes");
+        ensureNotNull(currency, "currency of Attributes");
+        ensureNotNull(deptorParty, "deptorParty of Attributes");
+        ensureNotNull(endToEndReference, "endToEndReference of Attributes");
+        ensureNotNull(foreignExchange, "foreignExchange of Attributes");
+        ensureNotNull(numericReference, "numericReference of Attributes");
+        ensureNotNull(paymentId, "paymentId of Attributes");
+        ensureNotNull(paymentPurpose, "paymentPurpose of Attributes");
+        ensureNotNull(paymentScheme, "paymentScheme of Attributes");
+        ensureNotNull(paymentType, "paymentType of Attributes");
+        ensureNotNull(processingDate, "processingDate of Attributes");
+        ensureNotNull(reference, "reference of Attributes");
+        ensureNotNull(schemePaymentSubType, "schemePaymentSubType of Attributes");
+        ensureNotNull(schemePaymentType, "schemePaymentType of Attributes");
+        ensureNotNull(sponsorParty, "sponsorPart of Attributes");
+
+        return new Attributes(amount,
+                beneficiaryParty,
+                chargesInformation,
+                currency,
+                deptorParty,
+                endToEndReference,
+                foreignExchange,
+                numericReference,
+                paymentId,
+                paymentPurpose,
+                paymentScheme,
+                paymentType,
+                processingDate,
+                reference,
+                schemePaymentSubType,
+                schemePaymentType,
+                sponsorParty);
+    }
 }

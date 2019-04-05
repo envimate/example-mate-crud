@@ -21,17 +21,17 @@
 
 package com.envimate.examples.example_mate_crud.validation;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException.customTypeValidationException;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class NumericValidator {
+    private NumericValidator() {
+    }
+
     public static double ensureDouble(final String value,
                                       final String description) {
         final String sanitized = SanityValidator.sanitized(value, description);
@@ -47,7 +47,7 @@ public final class NumericValidator {
     public static int ensurePositiveInteger(final String value, final String description) {
         final String sanitized = SanityValidator.sanitized(value, description);
         try {
-            int parsedValue = Integer.parseInt(sanitized);
+            final int parsedValue = Integer.parseInt(sanitized);
             if (parsedValue < 0) {
                 throw customTypeValidationException("%s is negative. Only positivity allowed here.", description);
             }

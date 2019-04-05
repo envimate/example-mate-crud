@@ -21,7 +21,7 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure;
 
-import com.envimate.examples.example_mate_crud.domain.Resource;
+import com.envimate.examples.example_mate_crud.domain.*;
 import com.envimate.mapmate.deserialization.Deserializer;
 import com.envimate.mapmate.filters.ClassFilter;
 import com.envimate.mapmate.filters.ClassFilters;
@@ -84,6 +84,10 @@ public final class MapMateFactory {
     private static ClassFilter domainClassFilter() {
         final Set<Class<?>> domainObjects = Set.of(
                 Resource.class
+                ,Attributes.class
+                , Amount.class
+                , SponsorParty.class
+                , BeneficiaryParty.class
         );
         return domainObjects::contains;
     }

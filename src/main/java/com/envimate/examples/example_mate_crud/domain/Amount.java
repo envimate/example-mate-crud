@@ -16,4 +16,7 @@ public class Amount {
         final double validated = NumericValidator.ensureDouble(value, "amount");
         return new Amount(validated);
     }
+    public String internalValue() {
+        return String.valueOf(this.value);
+    }
 }

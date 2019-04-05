@@ -22,10 +22,9 @@
 package com.envimate.examples.example_mate_crud.infrastructure;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
-import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResource;
-import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResourceRequest;
-import com.envimate.examples.example_mate_crud.usecases.resource.fetch.FetchResource;
 import com.envimate.examples.example_mate_crud.usecases.resource.ResourceNotFoundException;
+import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResource;
+import com.envimate.examples.example_mate_crud.usecases.resource.fetch.FetchResource;
 import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResource;
 import com.envimate.examples.example_mate_crud.usecases.resource.update.UpdateResource;
 import com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException;
@@ -37,8 +36,6 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-
-import java.util.UUID;
 
 import static com.envimate.httpmate.convenience.cors.CorsHandler.handleCorsOptionsRequests;
 import static com.envimate.httpmate.request.HttpRequestMethod.*;
@@ -76,30 +73,19 @@ final class HttpMateFactory {
                         webServiceRequest.getPathParameter("id").map(Id::id).get()
                 )
                 .mappingRequestsToUseCaseParametersByDefaultUsing((webServiceRequest, targetType, context) ->
-                        this.deserializer.deserialize(webServiceRequest.getBodyAs(String.class), targetType, deserializationInjector ->
-                        {
-//                            deserializationInjector.put()
-                            return deserializationInjector;
-                        })
+                        this.deserializer.deserialize(webServiceRequest.getBodyAs(String.class), targetType)
                 )
                 .usingTheResponseTemplate(
-                        (responseBuilder, context) ->
-                                responseBuilder.withEmptyBody().withContentType("application/json")
+                        (responseBuilder, context) -> responseBuilder.withEmptyBody().withContentType("application/json")
                 )
                 .serializingResponseObjectsByDefaultUsing(
-                        (object, responseBuilder, context) -> {
-                            responseBuilder.withBody(serializer.serialize(object, stringObjectMap -> {
-                                final Object organisationId = stringObjectMap.get("organisationId");
-                                stringObjectMap.put("organisation_id", organisationId);
-                                return stringObjectMap;
-                            }));
-                        }
+                        (object, responseBuilder, context) -> responseBuilder.withBody(serializer.serialize(object))
                 )
                 .mappingExceptionsOfType(ResourceNotFoundException.class).using((object, responseBuilder, context) ->
                         responseBuilder.withStatusCode(Http.StatusCodes.NOT_FOUND)
                 )
-                .mappingExceptionsOfType(CustomTypeValidationException.class).using((object, responseBuilder, context) ->
-                        responseBuilder.withStatusCode(Http.StatusCodes.BAD_REQUEST)
+                .mappingExceptionsOfType(CustomTypeValidationException.class).using((object, responseBuilder, context)
+                        -> responseBuilder.withStatusCode(Http.StatusCodes.BAD_REQUEST)
                 )
                 .mappingExceptionsByDefaultUsing((exception, responseBuilder, context) -> {
                     exception.printStackTrace();

@@ -22,7 +22,6 @@
 package com.envimate.examples.example_mate_crud.usecases.resource.list;
 
 import com.envimate.examples.example_mate_crud.usecases.resource.ResourceDTO;
-import com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

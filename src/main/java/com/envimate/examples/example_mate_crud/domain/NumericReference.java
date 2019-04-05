@@ -9,12 +9,12 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ExchangeRate {
-    private final double value;
+public class NumericReference {
+    private final int value;
 
-    public static ExchangeRate exchangeRate(final String value) {
-        final double validated = NumericValidator.ensureDouble(value, "value of ExchangeRate");
-        return new ExchangeRate(validated);
+    public static NumericReference numericReference(final String value) {
+        final int validated = NumericValidator.ensurePositiveInteger(value, "value of NumericReference");
+        return new NumericReference(validated);
     }
     public String internalValue() {
         return String.valueOf(this.value);

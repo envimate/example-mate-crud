@@ -16,4 +16,8 @@ public class AccountName {
         final String validated = LengthValidator.ensureMinLength(value, 2, "value of AccountName");
         return new AccountName(validated);
     }
+
+    public String internalValue() {
+        return this.value;
+    }
 }

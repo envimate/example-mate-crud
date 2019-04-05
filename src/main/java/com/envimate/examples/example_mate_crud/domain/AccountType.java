@@ -16,4 +16,8 @@ public class AccountType {
         final int validated = NumericValidator.ensurePositiveInteger(value, "value of AccountType");
         return new AccountType(validated);
     }
+
+    public String internalValue() {
+        return String.valueOf(this.value);
+    }
 }

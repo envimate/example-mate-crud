@@ -18,4 +18,9 @@ public class AccountNumberCode {
         final String validated = WhitelistValidator.ensureOneOf(value, List.of("BBAN", "IBAN"), "value of AccountNumberCode");
         return new AccountNumberCode(validated);
     }
+
+
+    public String internalValue() {
+        return this.value;
+    }
 }

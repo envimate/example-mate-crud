@@ -23,8 +23,6 @@ package com.envimate.examples.example_mate_crud.domain.repository;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.domain.Resource;
-import com.envimate.examples.example_mate_crud.domain.ResourceType;
-import com.envimate.examples.example_mate_crud.domain.Version;
 
 import java.util.List;
 
@@ -35,5 +33,5 @@ public interface ResourceRepository {
 
     Resource find(Id id);
 
-    Resource update(Id id, Version version, ResourceType resourceType);
+    void update(Resource resource);
 }

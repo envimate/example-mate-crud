@@ -23,8 +23,6 @@ package com.envimate.examples.example_mate_crud.infrastructure.db;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.domain.Resource;
-import com.envimate.examples.example_mate_crud.domain.ResourceType;
-import com.envimate.examples.example_mate_crud.domain.Version;
 import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
 
 import java.util.List;
@@ -46,7 +44,8 @@ public class ResourceRealRepository implements ResourceRepository {
     }
 
     @Override
-    public Resource update(final Id id, final Version version, final ResourceType resourceType) {
-        return null;
+    public void update(final Resource resource) {
+
     }
+
 }

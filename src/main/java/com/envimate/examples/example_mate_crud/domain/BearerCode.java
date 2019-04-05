@@ -17,4 +17,7 @@ public class BearerCode {
         return new BearerCode(validated);
     }
 
+    public String internalValue() {
+        return this.value;
+    }
 }

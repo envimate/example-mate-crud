@@ -16,4 +16,8 @@ public class BankId {
         final String validated = LengthValidator.ensureMinLength(value, 1, "value of BankId");
         return new BankId(validated);
     }
+
+    public String internalValue() {
+        return this.value;
+    }
 }

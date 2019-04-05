@@ -21,9 +21,7 @@
 
 package com.envimate.examples.example_mate_crud.usecases.resource.update;
 
-import com.envimate.examples.example_mate_crud.domain.Id;
-import com.envimate.examples.example_mate_crud.domain.ResourceType;
-import com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator;
+import com.envimate.examples.example_mate_crud.domain.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -37,10 +35,21 @@ import static com.envimate.examples.example_mate_crud.validation.RequiredParamet
 public final class UpdateResourceRequest {
     public final Id id;
     public final ResourceType resourceType;
+    public final Version version;
+    public final OrganisationId organisationId;
+    public final Attributes attributes;
 
-    public static UpdateResourceRequest updateResourceRequest(final Id id, final ResourceType resourceType) {
-        ensureNotNull(id, "Id");
-        ensureNotNull(resourceType, "ResourceType");
-        return new UpdateResourceRequest(id, resourceType);
+    public static UpdateResourceRequest updateResourceRequest(final Id id,
+                                                              final ResourceType resourceType,
+                                                              final Version version,
+                                                              final OrganisationId organisationId,
+                                                              final Attributes attributes
+    ) {
+        ensureNotNull(id, "Id in UpdateResourceRequest");
+        ensureNotNull(resourceType, "ResourceType in UpdateResourceRequest");
+        ensureNotNull(version, "Version in UpdateResourceRequest");
+        ensureNotNull(organisationId, "OrganisationId in UpdateResourceRequest");
+        ensureNotNull(attributes, "Attributes in UpdateResourceRequest");
+        return new UpdateResourceRequest(id, resourceType, version, organisationId, attributes);
     }
 }

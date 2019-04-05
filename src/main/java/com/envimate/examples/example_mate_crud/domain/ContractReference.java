@@ -16,4 +16,7 @@ public class ContractReference {
         final String validated = LengthValidator.ensureMinLength(value, 1, "value of ContractReference");
         return new ContractReference(validated);
     }
+    public String internalValue() {
+        return this.value;
+    }
 }

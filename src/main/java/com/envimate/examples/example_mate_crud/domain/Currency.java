@@ -16,6 +16,9 @@ public class Currency {
         final java.util.Currency validated = java.util.Currency.getInstance(value);
         return new Currency(validated);
     }
+    public String internalValue() {
+        return this.value.getCurrencyCode();
+    }
 
     //TODO validate
 }

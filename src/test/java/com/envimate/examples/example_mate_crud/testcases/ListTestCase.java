@@ -21,15 +21,22 @@
 
 package com.envimate.examples.example_mate_crud.testcases;
 
+import com.envimate.examples.example_mate_crud.domain.Attributes;
+import com.envimate.examples.example_mate_crud.domain.BeneficiaryParty;
 import com.envimate.examples.example_mate_crud.infrastructure.BackendClient;
+import com.envimate.examples.example_mate_crud.infrastructure.MapMateFactory;
 import com.envimate.examples.example_mate_crud.infrastructure.RawResponse;
 import com.envimate.examples.example_mate_crud.infrastructure.raw_request.ApiRequest;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
-import static com.envimate.examples.example_mate_crud.infrastructure.raw_request.CreateResourceRequestBuilder.resourceType;
+import static com.envimate.examples.example_mate_crud.infrastructure.raw_request.CreateResourceRequestBuilder.*;
+import static com.envimate.examples.example_mate_crud.infrastructure.raw_request.UpdateResourceRequestBuilder.version;
 
 public interface ListTestCase {
 
@@ -48,12 +55,28 @@ public interface ListTestCase {
 
     @Test
     default void listUseCase(final BackendClient backendClient) {
-        final ApiRequest createRequest = ApiRequest.createResourceRequest().with(resourceType("payment"));
+        final String organisationId = UUID.randomUUID().toString();
+        final String attributes =
+                "        {\n" +
+                "          \"accountName\": \"W Owens\",\n" +
+                "          \"accountNumber\": \"31926819\",\n" +
+                "          \"accountNumberCode\": \"BBAN\",\n" +
+                "          \"accountType\": 0,\n" +
+                "          \"address\": \"1 The Beneficiary Localtown SE2\",\n" +
+                "          \"bankId\": \"403000\",\n" +
+                "          \"bankIdCode\": \"GBDSC\",\n" +
+                "          \"name\": \"Wilfred Jeremiah Owens\"\n" +
+                "        }";
+        MapMateFactory.deserializer().deserialize(attributes, BeneficiaryParty.class);
+
+        final ApiRequest createRequest = ApiRequest.createResourceRequest()
+                .with(resourceType("payment"))
+                .with(organisationId(organisationId))
+                .with(attributes(attributes));
 
         final RawResponse createResponse = backendClient.execute(createRequest);
         createResponse.isSuccess();
         final String createdId = createResponse.fieldValue("$.id");
-
 
         final ApiRequest listRequest = ApiRequest.listResourceRequest();
         backendClient
@@ -63,6 +86,7 @@ public interface ListTestCase {
                             final List<?> resultList = rawResponse.fieldValue("$.data");
                             Assertions.assertEquals(1, resultList.size(), "List must contain 1 object");
                             Assertions.assertEquals(createdId, rawResponse.fieldValue("$.data[0].id"), "Returned object's id is wrong");
+                            Assertions.assertEquals(organisationId, rawResponse.fieldValue("$.data[0].organisationId"), "Returned object's organisation id is wrong");
                         }
                 );
     }

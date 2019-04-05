@@ -16,4 +16,7 @@ public class Address {
         final String validated = LengthValidator.ensureMinLength(value, 1, "value of Address");
         return new Address(validated);
     }
+    public String internalValue() {
+        return this.value;
+    }
 }
