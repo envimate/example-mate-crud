@@ -26,7 +26,7 @@
 	<parent>
 		<groupId>com.envimate</groupId>
 		<artifactId>envimate-opensource-parent</artifactId>
-		<version>1.0.7</version>
+		<version>1.0.10</version>
 	</parent>
 
 	<groupId>com.envimate.examples</groupId>
@@ -36,7 +36,7 @@
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
-		<junit.version.suffix>3.2</junit.version.suffix>
+		<junit.version.suffix>5.0-M1</junit.version.suffix>
 		<junit.jupiter.version>5.${junit.version.suffix}</junit.jupiter.version>
 		<junit.platform.version>1.${junit.version.suffix}</junit.platform.version>
 		<checkstyle.suppressions.location>
@@ -163,11 +163,11 @@
 					<configuration>
 						<compilerArgs>
 							<arg>-parameters</arg>
-							<!--<arg>-Werror</arg>-->
-							<!--<arg>-Xlint:all</arg>-->
-							<!--&lt;!&ndash; Avoids Warning:java: No processor claimed any of these annotations: org.junit.jupiter.api.Test... &ndash;&gt;-->
-							<!--<arg>-Xlint:-processing</arg>-->
-							<!--<arg>-Xlint:-varargs</arg>-->
+							<arg>-Werror</arg>
+							<arg>-Xlint:all</arg>
+							<!-- Avoids Warning:java: No processor claimed any of these annotations: org.junit.jupiter.api.Test... -->
+							<arg>-Xlint:-processing</arg>
+							<arg>-Xlint:-varargs</arg>
 						</compilerArgs>
 						<release>11</release>
 					</configuration>
