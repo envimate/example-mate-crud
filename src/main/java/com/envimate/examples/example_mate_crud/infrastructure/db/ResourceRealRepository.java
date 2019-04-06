@@ -22,8 +22,8 @@
 package com.envimate.examples.example_mate_crud.infrastructure.db;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
-import com.envimate.examples.example_mate_crud.domain.Resource;
 import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
+import com.envimate.examples.example_mate_crud.usecases.Resource;
 
 import java.util.List;
 

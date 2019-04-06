@@ -21,7 +21,6 @@
 
 package com.envimate.examples.example_mate_crud.domain;
 
-import com.envimate.examples.example_mate_crud.validation.LengthValidator;
 import com.envimate.examples.example_mate_crud.validation.WhitelistValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

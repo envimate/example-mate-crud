@@ -23,16 +23,85 @@ package com.envimate.examples.example_mate_crud.testcases;
 
 import com.envimate.examples.example_mate_crud.infrastructure.BackendClient;
 import com.envimate.examples.example_mate_crud.infrastructure.raw_request.ApiRequest;
-import com.envimate.examples.example_mate_crud.infrastructure.raw_request.CreateResourceRequestBuilder;
 import com.envimate.examples.example_mate_crud.validation.UuidValidator;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
+
+import static com.envimate.examples.example_mate_crud.infrastructure.raw_request.CreateResourceRequestBuilder.*;
 
 
 public interface CreateTestCase {
 
     @Test
     default void createSuccess(final BackendClient backendClient) {
-        final ApiRequest createRequest = ApiRequest.createResourceRequest().with(CreateResourceRequestBuilder.resourceType("payment"));
+
+        final String organisationId = UUID.randomUUID().toString();
+        final String attributes =
+                "  {\n" +
+                        "    \"amount\": \"100.21\",\n" +
+                        "    \"beneficiaryParty\": {\n" +
+                        "      \"accountName\": \"W Owens\",\n" +
+                        "      \"accountNumber\": \"31926819\",\n" +
+                        "      \"accountNumberCode\": \"BBAN\",\n" +
+                        "      \"accountType\": \"0\",\n" +
+                        "      \"address\": \"1 The Beneficiary Localtown SE2\",\n" +
+                        "      \"bankId\": \"403000\",\n" +
+                        "      \"bankIdCode\": \"GBDSC\",\n" +
+                        "      \"name\": \"Wilfred Jeremiah Owens\"\n" +
+                        "    },\n" +
+                        "    \"chargesInformation\": {\n" +
+                        "      \"bearerCode\": \"SHAR\",\n" +
+                        "      \"senderCharges\": [\n" +
+                        "        {\n" +
+                        "          \"amount\": \"5.00\",\n" +
+                        "          \"currency\": \"GBP\"\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "          \"amount\": \"10.00\",\n" +
+                        "          \"currency\": \"USD\"\n" +
+                        "        }\n" +
+                        "      ],\n" +
+                        "      \"receiverChargesAmount\": \"1.00\",\n" +
+                        "      \"receiverChargesCurrency\": \"USD\"\n" +
+                        "    },\n" +
+                        "    \"currency\": \"GBP\",\n" +
+                        "    \"debtorParty\": {\n" +
+                        "      \"accountName\": \"EJ Brown Black\",\n" +
+                        "      \"accountNumber\": \"GB29XABC10161234567801\",\n" +
+                        "      \"accountNumberCode\": \"IBAN\",\n" +
+                        "      \"address\": \"10 Debtor Crescent Sourcetown NE1\",\n" +
+                        "      \"bankId\": \"203301\",\n" +
+                        "      \"bankIdCode\": \"GBDSC\",\n" +
+                        "      \"name\": \"Emelia Jane Brown\"\n" +
+                        "    },\n" +
+                        "    \"endToEndReference\": \"Wil piano Jan\",\n" +
+                        "    \"foreignExchange\": {\n" +
+                        "      \"contractReference\": \"FX123\",\n" +
+                        "      \"exchangeRate\": \"2.00000\",\n" +
+                        "      \"originalAmount\": \"200.42\",\n" +
+                        "      \"originalCurrency\": \"USD\"\n" +
+                        "    },\n" +
+                        "    \"numericReference\": \"1002001\",\n" +
+                        "    \"paymentId\": \"123456789012345678\",\n" +
+                        "    \"paymentPurpose\": \"Paying for goods/services\",\n" +
+                        "    \"paymentScheme\": \"FPS\",\n" +
+                        "    \"paymentType\": \"Credit\",\n" +
+                        "    \"processingDate\": \"2017-01-18\",\n" +
+                        "    \"reference\": \"Payment for Em's piano lessons\",\n" +
+                        "    \"schemePaymentSubType\": \"InternetBanking\",\n" +
+                        "    \"schemePaymentType\": \"ImmediatePayment\",\n" +
+                        "    \"sponsorParty\": {\n" +
+                        "      \"accountNumber\": \"56781234\",\n" +
+                        "      \"bankId\": \"123123\",\n" +
+                        "      \"bankIdCode\": \"GBDSC\"\n" +
+                        "    }\n" +
+                        "  }\n";
+
+        final ApiRequest createRequest = ApiRequest.createResourceRequest()
+                .with(resourceType("payment"))
+                .with(organisationId(organisationId))
+                .with(attributes(attributes));
 
         backendClient.execute(createRequest)
                 .isSuccess()

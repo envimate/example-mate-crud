@@ -21,10 +21,10 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure.guice;
 
-import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResource;
-import com.envimate.examples.example_mate_crud.usecases.resource.fetch.FetchResource;
-import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResource;
-import com.envimate.examples.example_mate_crud.usecases.resource.update.UpdateResource;
+import com.envimate.examples.example_mate_crud.usecases.payment.create.CreateResource;
+import com.envimate.examples.example_mate_crud.usecases.payment.fetch.FetchResource;
+import com.envimate.examples.example_mate_crud.usecases.payment.list.ListResource;
+import com.envimate.examples.example_mate_crud.usecases.payment.update.UpdateResource;
 
 public class UseCaseModule extends CrudModule {
 

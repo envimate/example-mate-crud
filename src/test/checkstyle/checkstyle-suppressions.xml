@@ -21,14 +21,18 @@
   -->
 
 <!DOCTYPE suppressions PUBLIC
-        "-//Puppy Crawl//DTD Suppressions 1.1//EN"
-        "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+		"-//Puppy Crawl//DTD Suppressions 1.1//EN"
+		"http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 <suppressions>
-	<suppress checks="VisibilityModifier" files=".*Endpoint.java" />
-	<suppress checks="VisibilityModifier" files=".*Request.java" />
-	<suppress checks="VisibilityModifier" files=".*Response.java" />
-	<suppress checks="VisibilityModifier" files=".*RouteParameter.*.java" />
-	<suppress checks="VisibilityModifier" files=".*Response.*.java" />
-	<suppress checks="VisibilityModifier" files=".*DTO.*.java" />
-	<suppress checks="VisibilityModifier" files=".*Resource.java" />
+	<suppress checks="VisibilityModifier" files=".*Endpoint.java"/>
+	<suppress checks="VisibilityModifier" files=".*Request.java"/>
+	<suppress checks="VisibilityModifier" files=".*Response.java"/>
+	<suppress checks="VisibilityModifier" files=".*RouteParameter.*.java"/>
+	<suppress checks="VisibilityModifier" files=".*Response.*.java"/>
+	<suppress checks="VisibilityModifier" files=".*DTO.*.java"/>
+	<suppress checks="VisibilityModifier" files=".*Resource.java"/>
+	<suppress checks="VisibilityModifier" files=".*"/>
+	<suppress checks="ParameterNumber" files=".*Attributes.java"/>
+	<suppress checks="ParameterNumber" files=".*Party.java"/>
+	<suppress checks="MethodLength" files=".*HttpMateFactory.java"/>
 </suppressions>

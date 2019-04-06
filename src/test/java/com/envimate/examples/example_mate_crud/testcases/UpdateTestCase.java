@@ -25,9 +25,11 @@ import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.infrastructure.BackendClient;
 import com.envimate.examples.example_mate_crud.infrastructure.RawResponse;
 import com.envimate.examples.example_mate_crud.infrastructure.raw_request.ApiRequest;
+import com.envimate.examples.example_mate_crud.infrastructure.raw_request.CreateResourceRequestBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static com.envimate.examples.example_mate_crud.infrastructure.raw_request.CreateResourceRequestBuilder.validAttributes;
 import static com.envimate.examples.example_mate_crud.infrastructure.raw_request.UpdateResourceRequestBuilder.*;
 
 
@@ -35,15 +37,20 @@ public interface UpdateTestCase {
 
     @Test
     default void updateSuccess(final BackendClient backendClient) {
-        final ApiRequest createRequest = ApiRequest.createResourceRequest().with(resourceType("payment"));
+        final ApiRequest createRequest = ApiRequest.createResourceRequest()
+                .with(CreateResourceRequestBuilder.resourceType("Payment"))
+                .with(CreateResourceRequestBuilder.organisationId("d82002f6-198a-4d22-82e6-3382e76f84d5"))
+                .with(validAttributes());
 
         final RawResponse createResponse = backendClient.execute(createRequest).isSuccess();
         final String id = createResponse.fieldValue("$.id");
 
         final ApiRequest updateRequest = ApiRequest.updateResourceRequest(id)
-                .with(resourceType("newResourceType"))
                 .with(id(id))
-                .with(version("0"));
+                .with(version("0"))
+                .with(resourceType("Payment"))
+                .with(organisationId("57cbe218-7865-41c9-a362-21b575fe7673"))
+                .with(validAttributes());
 
         backendClient.execute(updateRequest)
                 .isSuccess();
@@ -52,18 +59,23 @@ public interface UpdateTestCase {
         backendClient.execute(fetchRequest)
                 .isSuccess()
                 .andVerifyThat(rawResponse -> {
-                    final String resourceType = rawResponse.fieldValue("$.resourceType");
+                    final String newOrganisationId = rawResponse.fieldValue("$.organisationId");
                     final String version = rawResponse.fieldValue("$.version");
-                    Assertions.assertEquals("newResourceType", resourceType, "The fetched object after update is returned incorrectly");
+                    Assertions.assertEquals("57cbe218-7865-41c9-a362-21b575fe7673", newOrganisationId, "The fetched object after update is returned incorrectly");
                     Assertions.assertEquals("1", version, "The version of the new object is incorrect");
                 });
     }
 
     @Test
     default void updateInvalidRequest(final BackendClient backendClient) {
-        final ApiRequest updateRequest = ApiRequest.updateResourceRequest(Id.newUniqueId().internalValue()).with(resourceType("newResourceType")).with(id(Id.newUniqueId().internalValue()));
+        final ApiRequest updateRequest = ApiRequest.updateResourceRequest(Id.newUniqueId().internalValue())
+                .with(resourceType("newResourceType"))
+                .with(id(Id.newUniqueId().internalValue()));
 
         backendClient.execute(updateRequest)
-                .isInvalidRequest();
+                .isInvalidRequest().andVerifyThat(rawResponse -> {
+            final String message = rawResponse.fieldValue("$.message");
+            Assertions.assertNotEquals("", message, "Error message is empty");
+        });
     }
 }

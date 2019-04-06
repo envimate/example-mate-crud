@@ -22,7 +22,7 @@
 package com.envimate.examples.example_mate_crud.domain.repository;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
-import com.envimate.examples.example_mate_crud.domain.Resource;
+import com.envimate.examples.example_mate_crud.usecases.Resource;
 
 import java.util.List;
 

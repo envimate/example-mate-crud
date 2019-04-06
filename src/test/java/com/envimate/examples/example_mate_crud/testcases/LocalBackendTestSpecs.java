@@ -25,5 +25,5 @@ import com.envimate.examples.example_mate_crud.infrastructure.LocalBackendParame
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(LocalBackendParameterResolver.class)
-public class LocalBackendTestSpecs implements ListTestCase, CreateTestCase, FetchTestCase, UpdateTestCase{
+public class LocalBackendTestSpecs implements ListTestCase, CreateTestCase, FetchTestCase, UpdateTestCase {
 }

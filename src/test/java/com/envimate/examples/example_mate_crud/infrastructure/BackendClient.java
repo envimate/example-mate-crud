@@ -56,17 +56,17 @@ public class BackendClient {
             httpRequest = Unirest.delete(url);
         } else if ("PUT".equalsIgnoreCase(httpMethod)) {
             httpRequest = Unirest.put(url);
-        }else {
+        } else {
             throw new UnsupportedOperationException("Only GET and POST http methods are supported at this point");
         }
 
         httpRequest.headers(apiRequest.headers);
         apiRequest.routeParameters.forEach(httpRequest::routeParam);
 
-        if(httpRequest instanceof HttpRequestWithBody) {
-            ((HttpRequestWithBody)httpRequest).body(apiRequest.body);
+        if (httpRequest instanceof HttpRequestWithBody) {
+            ((HttpRequestWithBody) httpRequest).body(apiRequest.body);
         } else {
-            if(apiRequest.hasBody()) {
+            if (apiRequest.hasBody()) {
                 throw new UnsupportedOperationException(
                         String.format("Can't send http request with method %s and body %s",
                                 apiRequest.httpMethod,

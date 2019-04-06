@@ -42,13 +42,13 @@ public class RawResponse {
     private final HttpResponse<String> jsonResponse;
     private final DocumentContext parsedResponse;
 
-    private String assertionMessage(final String additionalInfo) {
-        return String.format("%s. Request: %s. Response: Body(%s), StatusText(%s).", additionalInfo, apiRequest, jsonResponse.getBody(), jsonResponse.getStatusText());
-    }
-
     public static RawResponse rawResponse(final ApiRequest apiRequest, final HttpResponse<String> jsonResponse) {
         final DocumentContext parsedResponse = JsonPath.parse(jsonResponse.getRawBody());
         return new RawResponse(apiRequest, jsonResponse, parsedResponse);
+    }
+
+    private String assertionMessage(final String additionalInfo) {
+        return String.format("%s. Request: %s. Response: Body(%s), StatusText(%s).", additionalInfo, apiRequest, jsonResponse.getBody(), jsonResponse.getStatusText());
     }
 
     public RawResponse isSuccess() {
@@ -58,7 +58,7 @@ public class RawResponse {
     public <T> T fieldValue(final String path) {
         try {
             return parsedResponse.read(path);
-        }catch(PathNotFoundException e) {
+        } catch (PathNotFoundException e) {
             Assertions.fail(assertionMessage(String.format("Did not find requested field %s", path)), e);
             throw e;
         }

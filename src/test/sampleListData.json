@@ -890,7 +890,7 @@
         "end_to_end_reference": "Wil piano Jan",
         "fx": {
           "contract_reference": "FX123",
-          "exchange_rate": "2.00000",
+          "exchange_rate": "2.0z0000",
           "original_amount": "200.42",
           "original_currency": "USD"
         },

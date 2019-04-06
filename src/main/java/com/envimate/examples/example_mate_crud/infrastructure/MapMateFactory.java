@@ -21,23 +21,22 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure;
 
-import com.envimate.examples.example_mate_crud.domain.*;
+import com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException;
 import com.envimate.mapmate.deserialization.Deserializer;
-import com.envimate.mapmate.filters.ClassFilter;
 import com.envimate.mapmate.filters.ClassFilters;
 import com.envimate.mapmate.serialization.Serializer;
+import com.envimate.mapmate.validation.ExceptionMappingWithPropertyPath;
+import com.envimate.mapmate.validation.ValidationError;
 import com.google.gson.Gson;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Set;
-
 @ToString
 @EqualsAndHashCode
 public final class MapMateFactory {
-    private static final String COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_DOMAIN =
+    private static final String COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_CUSTOM_TYPES =
             "com.envimate.examples.example_mate_crud.domain";
-    private static final String COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_USECASES =
+    private static final String COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_DTOS =
             "com.envimate.examples.example_mate_crud.usecases";
 
     private MapMateFactory() {
@@ -45,16 +44,11 @@ public final class MapMateFactory {
 
     public static Serializer serializer() {
         return Serializer.aSerializer()
-                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_DOMAIN)
+                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_CUSTOM_TYPES)
                 .forCustomPrimitives()
                 .filteredBy(ClassFilters.allClassesThatHaveAPublicStringMethodWithZeroArgumentsNamed("internalValue"))
                 .thatAre().serializedUsingTheMethodNamed("internalValue")
-                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_DOMAIN)
-                .forDataTransferObjects()
-                .filteredBy(domainClassFilter())
-                .thatAre()
-                .serializedByItsPublicFields()
-                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_USECASES)
+                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_DTOS)
                 .forDataTransferObjects()
                 .filteredBy(ClassFilters.includingAll())
                 .thatAre().serializedByItsPublicFields()
@@ -64,31 +58,21 @@ public final class MapMateFactory {
 
     public static Deserializer deserializer() {
         return Deserializer.aDeserializer()
-                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_DOMAIN)
+                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_CUSTOM_TYPES)
                 .forCustomPrimitives()
                 .filteredBy(ClassFilters.allClassesThatHaveAPublicStringMethodWithZeroArgumentsNamed("internalValue"))
                 .thatAre().deserializedUsingTheStaticMethodWithSingleStringArgument()
-                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_DOMAIN)
-                .forDataTransferObjects()
-                .filteredBy(domainClassFilter())
-                .thatAre()
-                .deserializedUsingTheSingleFactoryMethod()
-                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_USECASES)
+                .thatScansThePackage(COM_ENVIMATE_EXAMPLES_EXAMPLE_MATE_CRUD_DTOS)
                 .forDataTransferObjects()
                 .filteredBy(ClassFilters.includingAll())
                 .thatAre().deserializedUsingTheSingleFactoryMethod()
                 .withUnmarshaller(new Gson()::fromJson)
+                .mappingExceptionUsing(CustomTypeValidationException.class, new ExceptionMappingWithPropertyPath() {
+                    @Override
+                    public ValidationError map(final Throwable t, final String propertyPath) {
+                        return new ValidationError(t.getMessage(), propertyPath);
+                    }
+                })
                 .build();
-    }
-
-    private static ClassFilter domainClassFilter() {
-        final Set<Class<?>> domainObjects = Set.of(
-                Resource.class
-                ,Attributes.class
-                , Amount.class
-                , SponsorParty.class
-                , BeneficiaryParty.class
-        );
-        return domainObjects::contains;
     }
 }

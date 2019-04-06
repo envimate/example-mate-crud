@@ -22,30 +22,33 @@
 package com.envimate.examples.example_mate_crud.infrastructure;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
-import com.envimate.examples.example_mate_crud.usecases.resource.ResourceNotFoundException;
-import com.envimate.examples.example_mate_crud.usecases.resource.create.CreateResource;
-import com.envimate.examples.example_mate_crud.usecases.resource.fetch.FetchResource;
-import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResource;
-import com.envimate.examples.example_mate_crud.usecases.resource.update.UpdateResource;
+import com.envimate.examples.example_mate_crud.usecases.ErrorDTO;
+import com.envimate.examples.example_mate_crud.usecases.payment.ResourceNotFoundException;
+import com.envimate.examples.example_mate_crud.usecases.payment.create.CreateResource;
+import com.envimate.examples.example_mate_crud.usecases.payment.fetch.FetchResource;
+import com.envimate.examples.example_mate_crud.usecases.payment.list.ListResource;
+import com.envimate.examples.example_mate_crud.usecases.payment.update.UpdateResource;
 import com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException;
 import com.envimate.httpmate.HttpMate;
 import com.envimate.httpmate.convenience.Http;
 import com.envimate.mapmate.deserialization.Deserializer;
 import com.envimate.mapmate.serialization.Serializer;
+import com.envimate.mapmate.validation.AggregatedValidationException;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import static com.envimate.examples.example_mate_crud.usecases.ErrorDTO.error;
 import static com.envimate.httpmate.convenience.cors.CorsHandler.handleCorsOptionsRequests;
 import static com.envimate.httpmate.request.HttpRequestMethod.*;
 
 @ToString
 @EqualsAndHashCode
-final class HttpMateFactory {
+public final class HttpMateFactory {
     private final Injector injector;
-    private Serializer serializer;
-    private Deserializer deserializer;
+    private final Serializer serializer;
+    private final Deserializer deserializer;
 
     @Inject
     HttpMateFactory(final Injector injector, final Serializer serializer, final Deserializer deserializer) {
@@ -79,13 +82,21 @@ final class HttpMateFactory {
                         (responseBuilder, context) -> responseBuilder.withEmptyBody().withContentType("application/json")
                 )
                 .serializingResponseObjectsByDefaultUsing(
-                        (object, responseBuilder, context) -> responseBuilder.withBody(serializer.serialize(object))
+                        (object, responseBuilder, context) -> responseBuilder.withBody(this.serializer.serialize(object))
                 )
                 .mappingExceptionsOfType(ResourceNotFoundException.class).using((object, responseBuilder, context) ->
                         responseBuilder.withStatusCode(Http.StatusCodes.NOT_FOUND)
                 )
                 .mappingExceptionsOfType(CustomTypeValidationException.class).using((object, responseBuilder, context)
                         -> responseBuilder.withStatusCode(Http.StatusCodes.BAD_REQUEST)
+                )
+                .mappingExceptionsOfType(AggregatedValidationException.class).using((object, responseBuilder, context)
+                                -> {
+                            final ErrorDTO error = error(object);
+                            responseBuilder
+                                    .withStatusCode(Http.StatusCodes.BAD_REQUEST)
+                                    .withBody(this.serializer.serialize(error));
+                        }
                 )
                 .mappingExceptionsByDefaultUsing((exception, responseBuilder, context) -> {
                     exception.printStackTrace();

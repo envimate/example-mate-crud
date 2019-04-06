@@ -32,11 +32,12 @@ public final class RequiredParameterValidator {
             throw customTypeValidationException("%s is required.", description);
         }
     }
+
     public static void ensureArrayNotEmpty(final Object[] value, final String description) {
         if (value == null) {
             throw customTypeValidationException("%s is required.", description);
         }
-        if(value.length < 1) {
+        if (value.length < 1) {
             throw customTypeValidationException("%s must not be empty.", description);
         }
     }

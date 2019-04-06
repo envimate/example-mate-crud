@@ -21,9 +21,10 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure;
 
+import com.envimate.examples.example_mate_crud.infrastructure.db.inmemory.RepositoryInMemoryModule;
+import com.envimate.examples.example_mate_crud.infrastructure.endpoints.PureJavaEndpoint;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.MapMateModule;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.UseCaseModule;
-import com.envimate.examples.example_mate_crud.infrastructure.inmemory.RepositoryInMemoryModule;
 import com.envimate.httpmate.HttpMate;
 import com.google.inject.Guice;
 import com.google.inject.Injector;

@@ -38,12 +38,12 @@ public abstract class AbstractBackendParameterResolver implements ParameterResol
     @Override
     public Object resolveParameter(final ParameterContext parameterContext,
                                    final ExtensionContext extensionContext) throws ParameterResolutionException {
-        if(!isStarted) {
+        if (!isStarted) {
             start();
             isStarted = true;
         }
         final Class<?> parameterType = parameterContext.getParameter().getType();
-        if(parameterType.equals(BackendClient.class)) {
+        if (parameterType.equals(BackendClient.class)) {
             return backendClient();
         }
         throw new UnsupportedOperationException("Unsupported dependency");
