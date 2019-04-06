@@ -19,22 +19,23 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.infrastructure.guice;
+package com.envimate.examples.example_mate_crud.usecases.health;
 
-import com.envimate.examples.example_mate_crud.usecases.health.CheckHealth;
-import com.envimate.examples.example_mate_crud.usecases.payment.create.CreateResource;
-import com.envimate.examples.example_mate_crud.usecases.payment.fetch.FetchResource;
-import com.envimate.examples.example_mate_crud.usecases.payment.list.ListResource;
-import com.envimate.examples.example_mate_crud.usecases.payment.update.UpdateResource;
+import com.envimate.examples.example_mate_crud.domain.HealthStatus;
+import com.envimate.examples.example_mate_crud.validation.RequiredParameterValidator;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-public class UseCaseModule extends CrudModule {
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class HealthDTO {
+    public final HealthStatus status;
 
-    @Override
-    protected void bindDependencies() {
-        bindToSingleConstructor(ListResource.class);
-        bindToSingleConstructor(CreateResource.class);
-        bindToSingleConstructor(FetchResource.class);
-        bindToSingleConstructor(UpdateResource.class);
-        bindToSingleConstructor(CheckHealth.class);
+    public static HealthDTO healthDTO(final HealthStatus status) {
+        RequiredParameterValidator.ensureNotNull(status, "status of the health");
+        return new HealthDTO(status);
     }
 }

@@ -23,6 +23,7 @@ package com.envimate.examples.example_mate_crud.infrastructure;
 
 import com.envimate.examples.example_mate_crud.domain.Id;
 import com.envimate.examples.example_mate_crud.usecases.ErrorDTO;
+import com.envimate.examples.example_mate_crud.usecases.health.CheckHealth;
 import com.envimate.examples.example_mate_crud.usecases.payment.ResourceNotFoundException;
 import com.envimate.examples.example_mate_crud.usecases.payment.create.CreateResource;
 import com.envimate.examples.example_mate_crud.usecases.payment.fetch.FetchResource;
@@ -59,6 +60,8 @@ public final class HttpMateFactory {
 
     public HttpMate httpMate() {
         return HttpMate.aHttpMateInstance()
+                .servingTheUseCase(CheckHealth.class)
+                .forRequestPath("health").andRequestMethod(GET)
                 .servingTheUseCase(ListResource.class)
                 .forRequestPath("api/resource").andRequestMethod(GET)
                 .servingTheUseCase(CreateResource.class)

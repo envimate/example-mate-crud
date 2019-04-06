@@ -19,22 +19,32 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.infrastructure.guice;
+package com.envimate.examples.example_mate_crud.domain;
 
-import com.envimate.examples.example_mate_crud.usecases.health.CheckHealth;
-import com.envimate.examples.example_mate_crud.usecases.payment.create.CreateResource;
-import com.envimate.examples.example_mate_crud.usecases.payment.fetch.FetchResource;
-import com.envimate.examples.example_mate_crud.usecases.payment.list.ListResource;
-import com.envimate.examples.example_mate_crud.usecases.payment.update.UpdateResource;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-public class UseCaseModule extends CrudModule {
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class HealthStatus {
+    private final String value;
 
-    @Override
-    protected void bindDependencies() {
-        bindToSingleConstructor(ListResource.class);
-        bindToSingleConstructor(CreateResource.class);
-        bindToSingleConstructor(FetchResource.class);
-        bindToSingleConstructor(UpdateResource.class);
-        bindToSingleConstructor(CheckHealth.class);
+    public static HealthStatus healthStatus(final String value) {
+        return new HealthStatus(value);
+    }
+
+    public static HealthStatus healthy() {
+        return healthStatus("HEALTHY");
+    }
+
+    public static HealthStatus unhealthy() {
+        return healthStatus("UNHEALTHY");
+    }
+
+    public String internalValue() {
+        return this.value;
     }
 }

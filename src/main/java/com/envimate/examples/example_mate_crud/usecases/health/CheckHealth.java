@@ -19,22 +19,15 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.infrastructure.guice;
+package com.envimate.examples.example_mate_crud.usecases.health;
 
-import com.envimate.examples.example_mate_crud.usecases.health.CheckHealth;
-import com.envimate.examples.example_mate_crud.usecases.payment.create.CreateResource;
-import com.envimate.examples.example_mate_crud.usecases.payment.fetch.FetchResource;
-import com.envimate.examples.example_mate_crud.usecases.payment.list.ListResource;
-import com.envimate.examples.example_mate_crud.usecases.payment.update.UpdateResource;
+import com.envimate.examples.example_mate_crud.domain.HealthStatus;
 
-public class UseCaseModule extends CrudModule {
+public class CheckHealth {
+    public CheckHealth() {
+    }
 
-    @Override
-    protected void bindDependencies() {
-        bindToSingleConstructor(ListResource.class);
-        bindToSingleConstructor(CreateResource.class);
-        bindToSingleConstructor(FetchResource.class);
-        bindToSingleConstructor(UpdateResource.class);
-        bindToSingleConstructor(CheckHealth.class);
+    public HealthDTO healthStatus() {
+        return HealthDTO.healthDTO(HealthStatus.healthy());
     }
 }
