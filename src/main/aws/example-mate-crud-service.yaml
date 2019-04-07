@@ -224,7 +224,7 @@ Resources:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
           SecurityGroups:
-            - !Ref SecurityGroup
+            - !ImportValue "envimate-cluster-instance-security-group"
           Subnets:
             - !Ref PublicSubnetId
             - !Ref AlternatePublicSubnetId
