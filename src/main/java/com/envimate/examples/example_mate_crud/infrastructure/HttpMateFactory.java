@@ -29,23 +29,35 @@ import com.envimate.examples.example_mate_crud.usecases.resource.list.ListResour
 import com.envimate.examples.example_mate_crud.usecases.resource.update.UpdateResource;
 import com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException;
 import com.envimate.httpmate.HttpMate;
-import com.envimate.httpmate.convenience.Http;
 import com.envimate.mapmate.deserialization.Deserializer;
 import com.envimate.mapmate.serialization.Serializer;
+import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import static com.envimate.httpmate.convenience.cors.CorsHandler.handleCorsOptionsRequests;
+import java.util.Map;
+import java.util.Objects;
+
+import static com.envimate.examples.example_mate_crud.domain.Id.id;
+import static com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException.customTypeValidationException;
+import static com.envimate.httpmate.HttpMate.aHttpMateInstance;
+import static com.envimate.httpmate.chains.HttpMateChainKeys.*;
+import static com.envimate.httpmate.convenience.Http.Headers.CONTENT_TYPE;
+import static com.envimate.httpmate.convenience.Http.StatusCodes.*;
+import static com.envimate.httpmate.convenience.cors.CorsModule.corsModule;
+import static com.envimate.httpmate.request.ContentType.json;
 import static com.envimate.httpmate.request.HttpRequestMethod.*;
+import static com.envimate.httpmate.unpacking.BodyMapParsingModule.aBodyMapParsingModule;
+import static java.util.Arrays.asList;
 
 @ToString
 @EqualsAndHashCode
 final class HttpMateFactory {
     private final Injector injector;
-    private Serializer serializer;
-    private Deserializer deserializer;
+    private final Serializer serializer;
+    private final Deserializer deserializer;
 
     @Inject
     HttpMateFactory(final Injector injector, final Serializer serializer, final Deserializer deserializer) {
@@ -54,8 +66,54 @@ final class HttpMateFactory {
         this.deserializer = deserializer;
     }
 
+    @SuppressWarnings("unchecked")
     public HttpMate httpMate() {
-        return HttpMate.aHttpMateInstance()
+        return aHttpMateInstance()
+                .servingTheUseCase(ListResource.class).forRequestPath("api/resource").andRequestMethod(GET)
+                .servingTheUseCase(CreateResource.class).forRequestPath("api/resource").andRequestMethod(POST)
+                .servingTheUseCase(FetchResource.class).forRequestPath("api/resource/<id>").andRequestMethod(GET)
+                .servingTheUseCase(UpdateResource.class).forRequestPath("api/resource/<id>").andRequestMethod(PUT)
+                .mappingUseCaseParametersOfType(Id.class).using((targetType, map) -> id((String) map.get("id")))
+                .mappingUseCaseParametersByDefaultUsing((targetType, map) -> this.deserializer.deserializeFromMap(map, targetType))
+                .preparingRequestsForParameterMappingThatByDirectlyMappingAllData()
+                .serializingResponseObjectsByDefaultUsing(serializer::serializeToMap)
+                .mappingResponsesUsing((event, metaData) -> metaData.set(STRING_RESPONSE, new Gson().toJson(event)))
+                .configuredBy((configurator, useCaseConfigurator) -> {
+                    useCaseConfigurator.configureUseCaseInstantiation().obtainingUseCaseInstancesUsing(injector::getInstance);
+                    configurator.configureResponseTemplate().usingTheResponseTemplate(metaData -> {
+                        metaData.get(RESPONSE_HEADERS).put(CONTENT_TYPE, "application/json");
+                        metaData.set(RESPONSE_STATUS, OK);
+                    });
+                    configurator.filterRequests(metaData -> metaData.get(PATH_PARAMETERS).getPathParameter("id").ifPresent(idInPath -> {
+                        final String idInBody = (String) metaData.get(BODY_MAP).get("id");
+                        if (idInBody != null && !Objects.equals(idInPath, idInBody)) {
+                            throw customTypeValidationException(String.format(
+                                    "The provided id(%s) does not correspond to the id in the request(%s)",
+                                    idInPath,
+                                    idInBody)
+                            );
+                        }
+                    }));
+                    configurator.configureExceptionMapping()
+                            .mappingExceptionsOfType(ResourceNotFoundException.class)
+                            .using((exception, metaData) -> metaData.set(RESPONSE_STATUS, NOT_FOUND));
+                    configurator.configureExceptionMapping()
+                            .mappingExceptionsOfType(CustomTypeValidationException.class)
+                            .using((object, metaData) -> metaData.set(RESPONSE_STATUS, BAD_REQUEST));
+                    configurator.configureExceptionMapping()
+                            .mappingExceptionsByDefaultUsing((exception, metaData) -> {
+                                exception.printStackTrace();
+                                metaData.set(RESPONSE_STATUS, INTERNAL_SERVER_ERROR);
+                            });
+                    configurator.configureLogger().loggingToStdoutAndStderr();
+                    configurator.registerModule(corsModule("*", asList(GET, POST, PUT, DELETE), asList("Content-Type", "Authorization", "X-Requested-With", "Content-Length", "Accept,Origin")));
+                    configurator.registerModule(aBodyMapParsingModule()
+                            .parsingContentType(json()).with(body -> new Gson().fromJson(body, Map.class))
+                            .usingTheDefaultContentType(json()));
+                });
+
+        /*
+                return HttpMate.aHttpMateInstance()
                 .servingTheUseCase(ListResource.class)
                 .forRequestPath("api/resource").andRequestMethod(GET)
                 .servingTheUseCase(CreateResource.class)
@@ -92,5 +150,6 @@ final class HttpMateFactory {
                     responseBuilder.withStatusCode(Http.StatusCodes.INTERNAL_SERVER_ERROR);
                 })
                 .loggingToStdoutAndStderr();
+         */
     }
 }

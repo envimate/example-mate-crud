@@ -29,6 +29,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import static com.envimate.examples.example_mate_crud.infrastructure.Host.host;
+import static com.envimate.httpmate.convenience.endpoints.PureJavaEndpoint.pureJavaEndpointFor;
 
 public class LocalBackendParameterResolver extends AbstractBackendParameterResolver {
 
@@ -40,7 +41,7 @@ public class LocalBackendParameterResolver extends AbstractBackendParameterResol
                 new UseCaseModule());
         final HttpMateFactory httpMateFactory = injector.getInstance(HttpMateFactory.class);
         final HttpMate httpMate = httpMateFactory.httpMate();
-        PureJavaEndpoint.pureJavaEndpointFor(httpMate).listeningOnThePort(LOCAL_ENDPOINT_PORT);
+        pureJavaEndpointFor(httpMate).listeningOnThePort(LOCAL_ENDPOINT_PORT);
     }
 
     @Override
