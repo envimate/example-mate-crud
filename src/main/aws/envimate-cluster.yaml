@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: The envimate example ECS cluster.
+
+Parameters:
+  ImageId:
+    Type: AWS::EC2::Image::Id
+    Description: The ECS-Optimized AMI ID
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: The ECS-Optimized AMI ID
+  InstanceType:
+    Type: String
+    Description: The type of the instance.
+  DesiredCapacity:
+    Type: String
+    Description: The amount of instances desired.
+    Default: 1
+
+Resources:
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Sub "${AWS::StackName}"
+
+  EcsTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      RoleName: !Sub "${AWS::StackName}-instance-role-${AWS::Region}"
+      Path: /
+      Policies:
+        - PolicyName: !Sub "${AWS::StackName}-ecs-ecr-logs"
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "ecs:StartTelemetrySession"
+                  - "ecs:RegisterContainerInstance"
+                  - "ecs:Submit*"
+                  - "ecs:DeregisterContainerInstance"
+                Resource:
+                  - !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/envimate*"
+              - Effect: Allow
+                Action:
+                  - "ecr:BatchCheckLayerAvailability"
+                  - "ecr:GetRepositoryPolicy"
+                  - "ecr:GetDownloadUrlForLayer"
+                  - "ecr:BatchGetImage"
+                  - "ecr:DescribeImages"
+                  - "ecr:GetAuthorizationToken"
+                  - "ecs:Poll"
+                  - "ecs:DiscoverPollEndpoint"
+                  - "ecs:StartTelemetrySession"
+                  - "ecs:CreateCluster"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: '*'
+        - PolicyName: !Sub "${AWS::StackName}-ecs-agent-logs"
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "logs:CreateLogStream"
+                  - "logs:CreateLogGroup"
+                  - "logs:PutLogEvents"
+                  - "logs:DescribeLogStreams"
+                Resource: "arn:aws:logs:*:*:*"
+
+  Ec2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub "${AWS::StackName}-instance-security-group"
+      GroupDescription: The SecurityGroup of EC2 Instances in the envimate Cluster.
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-instance-security-group"
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /envimate/ecs/${AWS::StackName}/services
+      RetentionInDays: "90"
+
+Outputs:
+  LogGroup:
+    Value: !Ref LogGroup
+    Export:
+      Name: "envimate-cluster-log-group"
+  Ec2SecurityGroup:
+    Value: !Ref Ec2SecurityGroup
+    Export:
+      Name: "envimate-cluster-instance-security-group"
+  EcsTaskExecutionRoleArn:
+    Value: !GetAtt EcsTaskExecutionRole.Arn
+    Export:
+      Name: "envimate-cluster-execution-role-arn"
+
