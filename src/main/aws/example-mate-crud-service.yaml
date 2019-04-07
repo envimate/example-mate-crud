@@ -229,9 +229,6 @@ Resources:
             - !Ref PublicSubnetId
             - !Ref AlternatePublicSubnetId
 #      LoadBalancers:
-      PlacementStrategies:
-        - Type: "spread"
-          Field: "host"
 #        Field: "attribute:ecs.availability-zone"
 #      Role: The name or ARN of an AWS Identity and Access Management (IAM) role that allows your Amazon ECS container agent to make calls to your load balancer.
       SchedulingStrategy: "REPLICA"
