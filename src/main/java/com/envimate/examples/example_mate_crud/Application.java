@@ -23,11 +23,11 @@ package com.envimate.examples.example_mate_crud;
 
 import com.envimate.examples.example_mate_crud.infrastructure.HttpMateFactory;
 import com.envimate.examples.example_mate_crud.infrastructure.db.RepositoryDynamoDbModule;
-import com.envimate.examples.example_mate_crud.infrastructure.endpoints.PureJavaEndpoint;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.AwsModule;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.MapMateModule;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.UseCaseModule;
 import com.envimate.httpmate.HttpMate;
+import com.envimate.httpmate.convenience.endpoints.PureJavaEndpoint;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import lombok.EqualsAndHashCode;

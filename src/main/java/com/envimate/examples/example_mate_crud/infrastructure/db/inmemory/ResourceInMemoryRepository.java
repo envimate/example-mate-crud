@@ -77,6 +77,11 @@ public final class ResourceInMemoryRepository implements ResourceRepository {
         this.db.put(resource.id, newResource);
     }
 
+    @Override
+    public void delete(final Id id) {
+        this.db.remove(id);
+    }
+
     private Resource clone(final Resource resource, final Version nextVersion) {
         final String serialized = this.serializer.serialize(resource);
         return this.deserializer.deserialize(serialized, Resource.class, injector -> {

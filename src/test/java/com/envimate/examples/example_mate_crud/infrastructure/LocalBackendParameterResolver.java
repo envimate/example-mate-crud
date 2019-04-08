@@ -22,30 +22,47 @@
 package com.envimate.examples.example_mate_crud.infrastructure;
 
 import com.envimate.examples.example_mate_crud.infrastructure.db.inmemory.RepositoryInMemoryModule;
-import com.envimate.examples.example_mate_crud.infrastructure.endpoints.PureJavaEndpoint;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.MapMateModule;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.UseCaseModule;
 import com.envimate.httpmate.HttpMate;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import org.junit.jupiter.api.extension.ConditionEvaluationResult;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 import static com.envimate.examples.example_mate_crud.infrastructure.Host.host;
+import static com.envimate.httpmate.convenience.endpoints.PureJavaEndpoint.pureJavaEndpointFor;
 
 public class LocalBackendParameterResolver extends AbstractBackendParameterResolver {
-
     private static final int LOCAL_ENDPOINT_PORT = 1337;
+    private Injector injector;
 
+    @Override
     protected void start() {
-        final Injector injector = Guice.createInjector(new RepositoryInMemoryModule(),
+        this.injector = Guice.createInjector(new RepositoryInMemoryModule(),
                 new MapMateModule(),
                 new UseCaseModule());
-        final HttpMateFactory httpMateFactory = injector.getInstance(HttpMateFactory.class);
+        final HttpMateFactory httpMateFactory = this.injector.getInstance(HttpMateFactory.class);
         final HttpMate httpMate = httpMateFactory.httpMate();
-        PureJavaEndpoint.pureJavaEndpointFor(httpMate).listeningOnThePort(LOCAL_ENDPOINT_PORT);
+        pureJavaEndpointFor(httpMate).listeningOnThePort(LOCAL_ENDPOINT_PORT);
+    }
+
+    @Override
+    protected Injector injector() {
+        return this.injector;
     }
 
     @Override
     protected BackendClient backendClient() {
         return BackendClient.backendClient(host("http://localhost:" + LOCAL_ENDPOINT_PORT));
+    }
+
+    @Override
+    public ConditionEvaluationResult evaluateExecutionCondition(final ExtensionContext extensionContext) {
+        if (TestMode.testMode().isInMemory()) {
+            return ConditionEvaluationResult.enabled("InMemoryTestModeActive");
+        } else {
+            return ConditionEvaluationResult.disabled("InMemoryTestModeInActive");
+        }
     }
 }

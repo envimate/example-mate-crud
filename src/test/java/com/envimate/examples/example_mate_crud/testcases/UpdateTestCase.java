@@ -29,6 +29,8 @@ import com.envimate.examples.example_mate_crud.infrastructure.raw_request.Create
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static com.envimate.examples.example_mate_crud.infrastructure.raw_request.CreateResourceRequestBuilder.validAttributes;
 import static com.envimate.examples.example_mate_crud.infrastructure.raw_request.UpdateResourceRequestBuilder.*;
 
@@ -77,5 +79,62 @@ public interface UpdateTestCase {
             final String message = rawResponse.fieldValue("$.message");
             Assertions.assertNotEquals("", message, "Error message is empty");
         });
+    }
+
+    @Test
+    default void updateNonExisting(final BackendClient backendClient) {
+        final String id = Id.newUniqueId().internalValue();
+        final ApiRequest updateRequest = ApiRequest.updateResourceRequest(id)
+                .with(id(id))
+                .with(version("0"))
+                .with(resourceType("Payment"))
+                .with(organisationId("57cbe218-7865-41c9-a362-21b575fe7673"))
+                .with(validAttributes());
+
+        backendClient.execute(updateRequest)
+                .isNotFound();
+    }
+
+    @Test
+    default void updateNotMatchingIds(final BackendClient backendClient) {
+        final ApiRequest createRequest = ApiRequest.createResourceRequest()
+                .with(CreateResourceRequestBuilder.resourceType("Payment"))
+                .with(CreateResourceRequestBuilder.organisationId("d82002f6-198a-4d22-82e6-3382e76f84d5"))
+                .with(validAttributes());
+
+        final RawResponse createResponse = backendClient.execute(createRequest).isSuccess();
+        final String id = createResponse.fieldValue("$.id");
+
+        final ApiRequest updateRequest = ApiRequest.updateResourceRequest("e2f2c163-78cd-4ead-9927-7860f685ac59")
+                .with(id(id))
+                .with(version("0"))
+                .with(resourceType("Payment"))
+                .with(organisationId("57cbe218-7865-41c9-a362-21b575fe7673"))
+                .with(validAttributes());
+
+        backendClient.execute(updateRequest)
+                .isInvalidRequest();
+    }
+
+    @Test
+    default void updateNotMatchingIdsReverse(final BackendClient backendClient) {
+        final String organisationId = UUID.randomUUID().toString();
+        final ApiRequest createRequest = ApiRequest.createResourceRequest()
+                .with(CreateResourceRequestBuilder.resourceType("Payment"))
+                .with(CreateResourceRequestBuilder.organisationId(organisationId))
+                .with(validAttributes());
+
+        final RawResponse createResponse = backendClient.execute(createRequest).isSuccess();
+        final String id = createResponse.fieldValue("$.id");
+
+        final ApiRequest updateRequest = ApiRequest.updateResourceRequest(id)
+                .with(id("e2f2c163-78cd-4ead-9927-7860f685ac59"))
+                .with(version("0"))
+                .with(resourceType("Payment"))
+                .with(organisationId(organisationId))
+                .with(validAttributes());
+
+        backendClient.execute(updateRequest)
+                .isInvalidRequest();
     }
 }

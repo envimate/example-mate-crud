@@ -91,12 +91,12 @@
 		<dependency>
 			<groupId>com.envimate.httpmate</groupId>
 			<artifactId>core</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.14</version>
 		</dependency>
 		<dependency>
-			<groupId>com.envimate</groupId>
-			<artifactId>mapmate</artifactId>
-			<version>1.6.6</version>
+			<groupId>com.envimate.mapmate</groupId>
+			<artifactId>core</artifactId>
+			<version>1.6.10</version>
 		</dependency>
 
 		<dependency>
@@ -117,6 +117,17 @@
 			<version>4.2.2</version>
 		</dependency>
 
+		<!--logging-->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.26</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+		</dependency>
 
 		<!--AWS-->
 

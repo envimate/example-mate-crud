@@ -48,4 +48,5 @@ public final class Resource {
                                     final Attributes attributes) {
         return new Resource(id, resourceType, version, organisationId, attributes);
     }
+
 }
