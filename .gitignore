@@ -16,3 +16,4 @@ buildNumber.properties
 !.idea/inspectionProfiles
 !.idea/runConfigurations
 !.idea/codeStyleSettings.xml
+src/main/shell/env.sh
