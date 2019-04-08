@@ -34,4 +34,6 @@ public interface ResourceRepository {
     Resource find(Id id);
 
     void update(Resource resource);
+
+    void delete(Id id);
 }

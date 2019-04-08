@@ -29,18 +29,23 @@ import com.amazonaws.services.dynamodbv2.document.internal.PageIterable;
 import com.envimate.examples.example_mate_crud.infrastructure.DynamoDbLocalBackendParameterResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @ExtendWith({DynamoDbLocalBackendParameterResolver.class})
 public class DynamoDbLocalBackendTestSpecs implements CreateTestCase, FetchTestCase, UpdateTestCase, ListTestCase {
     private static final String TABLE_NAME = "resource";
+    private static final Logger LOGGER = LoggerFactory.getLogger(DynamoDbLocalBackendTestSpecs.class);
 
     @BeforeEach
     public void beforeEach(final DynamoDB dynamoDB) {
+        LOGGER.debug("Cleaning up dynamoDB");
         final ItemCollection<ScanOutcome> items = dynamoDB.getTable(TABLE_NAME).scan();
         final PageIterable<Item, ScanOutcome> pages = items.pages();
         pages.forEach(page -> {
             page.getLowLevelResult().getItems().forEach(item -> {
+                LOGGER.trace("deleting item {} from table {}", item, TABLE_NAME);
                 dynamoDB.getTable(TABLE_NAME).deleteItem("id", item.getString("id"));
             });
         });

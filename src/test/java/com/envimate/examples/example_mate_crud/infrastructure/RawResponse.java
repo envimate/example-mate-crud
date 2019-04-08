@@ -72,7 +72,7 @@ public class RawResponse {
         return assertStatusCode(404);
     }
 
-    private RawResponse assertStatusCode(final int expectedCode) {
+    public RawResponse assertStatusCode(final int expectedCode) {
         Assertions.assertEquals(expectedCode, this.jsonResponse.getStatus(), assertionMessage("Unexpected status code"));
         return this;
     }

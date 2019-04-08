@@ -27,7 +27,6 @@ import com.envimate.examples.example_mate_crud.usecases.Resource;
 
 import static com.envimate.examples.example_mate_crud.usecases.Resource.resource;
 import static com.envimate.examples.example_mate_crud.usecases.payment.ResourceNotFoundException.resourceNotFoundException;
-import static com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException.customTypeValidationException;
 
 public final class UpdateResource {
     private final ResourceRepository resourceRepository;
@@ -37,14 +36,6 @@ public final class UpdateResource {
     }
 
     public void updateResource(final Id id, final UpdateResourceRequest request) {
-        if (!request.id.equals(id)) {
-            throw customTypeValidationException(String.format(
-                    "The provided id(%s) does not correspond to the id in the request(%s)",
-                    id.internalValue(),
-                    request.id.internalValue())
-            );
-        }
-
         final Resource resource = this.resourceRepository.find(id);
         if (resource == null) {
             throw resourceNotFoundException("Resource for id %s not found", id.internalValue());

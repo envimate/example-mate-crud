@@ -21,13 +21,32 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure;
 
+import com.google.inject.Injector;
+import org.junit.jupiter.api.extension.ConditionEvaluationResult;
+import org.junit.jupiter.api.extension.ExtensionContext;
+
 public class ExternalUrlParameterResolver extends AbstractBackendParameterResolver {
 
+    @Override
     protected void start() {
+    }
+
+    @Override
+    protected Injector injector() {
+        return null;
     }
 
     @Override
     protected BackendClient backendClient() {
         return BackendClient.backendClient(TestConfiguration.host());
+    }
+
+    @Override
+    public ConditionEvaluationResult evaluateExecutionCondition(final ExtensionContext extensionContext) {
+        if (TestMode.testMode().isFullIntegration()) {
+            return ConditionEvaluationResult.enabled("FullIntegrationTestModeActive");
+        } else {
+            return ConditionEvaluationResult.disabled("FullIntegrationTestModeInActive");
+        }
     }
 }

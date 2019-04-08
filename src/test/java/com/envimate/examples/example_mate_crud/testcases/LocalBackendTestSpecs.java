@@ -22,8 +22,19 @@
 package com.envimate.examples.example_mate_crud.testcases;
 
 import com.envimate.examples.example_mate_crud.infrastructure.LocalBackendParameterResolver;
+import com.envimate.examples.example_mate_crud.infrastructure.db.inmemory.ResourceInMemoryRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ExtendWith(LocalBackendParameterResolver.class)
 public class LocalBackendTestSpecs implements ListTestCase, CreateTestCase, FetchTestCase, UpdateTestCase {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocalBackendTestSpecs.class);
+
+    @BeforeEach
+    public void beforeEach(final ResourceInMemoryRepository repository) {
+        LOGGER.debug("Cleaning up inmemoryDB");
+        repository.all().forEach(resource -> repository.delete(resource.id));
+    }
 }

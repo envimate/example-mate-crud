@@ -32,11 +32,11 @@ import com.envimate.examples.example_mate_crud.usecases.Resource;
 import com.envimate.mapmate.deserialization.Deserializer;
 import com.envimate.mapmate.serialization.Serializer;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.envimate.examples.example_mate_crud.infrastructure.db.DynamoDBAttributes.attributeValue;
+import static com.envimate.examples.example_mate_crud.infrastructure.db.DynamoDBAttributes.primaryKey;
 
 public class ResourceDynamoDbRepository implements ResourceRepository {
     private static final String TABLE_NAME = "resource";
@@ -95,19 +95,22 @@ public class ResourceDynamoDbRepository implements ResourceRepository {
     @Override
     public void update(final Resource resource) {
         final Map<String, AttributeValue> expressionAttributeValuesForPut = new HashMap<>();
-        expressionAttributeValuesForPut.put(":expected_version", new AttributeValue().withS(resource.version.internalValue()));
+        final AttributeValue versionAttributeValue = attributeValue(resource.version.internalValue());
+        expressionAttributeValuesForPut.put(":expected_version", versionAttributeValue);
 
         final Item item = this.dynamoDb.getTable(TABLE_NAME).getItem("id", resource.id.internalValue());
         if (item == null) {
-            throw new UnsupportedOperationException(String.format("Item you are trying to update does not exists.Resource: %%s%s", resource));
+            throw new UnsupportedOperationException(String.format(
+                    "Item you are trying to update does not exists.Resource: %%s%s", resource)
+            );
         }
 
         final String serializedResource = this.serializer.serialize(clone(resource, resource.version.next()));
 
         final Map<String, AttributeValue> newItem = Map.of(
-                "id", new AttributeValue(resource.id.internalValue()),
-                "version", new AttributeValue(resource.version.next().internalValue()),
-                "resource", new AttributeValue(serializedResource));
+                "id", attributeValue(resource.id.internalValue()),
+                "version", attributeValue(resource.version.next().internalValue()),
+                "resource", attributeValue(serializedResource));
 
         final Put updateItem = new Put()
                 .withTableName("resource")
@@ -118,7 +121,18 @@ public class ResourceDynamoDbRepository implements ResourceRepository {
 
         final TransactWriteItem transactWriteItem = new TransactWriteItem().withPut(updateItem);
         final TransactWriteItemsRequest request = new TransactWriteItemsRequest().withTransactItems(transactWriteItem);
-        this.client.transactWriteItems(request);
+        try {
+            this.client.transactWriteItems(request);
+        } catch (final TransactionCanceledException exception) {
+            throw new ConcurrentModificationException(String.format(
+                    "%s. Unexpected version of Resource(%s).", exception.getMessage(), resource
+            ), exception);
+        }
+    }
+
+    @Override
+    public void delete(final Id id) {
+        dynamoDb.getTable(TABLE_NAME).deleteItem(primaryKey(id.internalValue()));
     }
 
     private Resource clone(final Resource resource, final Version nextVersion) {

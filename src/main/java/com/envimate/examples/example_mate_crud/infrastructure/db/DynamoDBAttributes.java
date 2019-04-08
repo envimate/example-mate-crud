@@ -19,11 +19,20 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.testcases;
+package com.envimate.examples.example_mate_crud.infrastructure.db;
 
-import com.envimate.examples.example_mate_crud.infrastructure.ExternalUrlParameterResolver;
-import org.junit.jupiter.api.extension.ExtendWith;
+import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 
-@ExtendWith(ExternalUrlParameterResolver.class)
-public class ExternalUrlTestSpecs implements ListTestCase, CreateTestCase, FetchTestCase, UpdateTestCase {
+final class DynamoDBAttributes {
+    private DynamoDBAttributes() {
+    }
+
+    static AttributeValue attributeValue(final String value) {
+        return new AttributeValue().withS(value);
+    }
+
+    static PrimaryKey primaryKey(final String idValue) {
+        return new PrimaryKey("id", idValue);
+    }
 }
