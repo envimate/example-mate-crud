@@ -44,8 +44,8 @@ Resources:
       GroupDescription: !Sub "${AWS::StackName} public load balancer security group"
       VpcId: !Ref VpcId
       Tags:
-      - Key: "Name"
-        Value: !Sub "${AWS::StackName}-public-load-balancer-sg"
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-public-load-balancer-sg"
 
   PublicLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -53,18 +53,18 @@ Resources:
       Name: !Sub "${AWS::StackName}-alb"
       Scheme: internet-facing
       LoadBalancerAttributes:
-      - Key: idle_timeout.timeout_seconds
-        Value: '30'
+        - Key: idle_timeout.timeout_seconds
+          Value: '30'
       Subnets:
-      # The load balancer is placed into the public subnets, so that traffic
-      # from the internet can reach the load balancer directly via the internet gateway
-      - !Ref PublicSubnetId
-      - !Ref AlternatePublicSubnetId
+        # The load balancer is placed into the public subnets, so that traffic
+        # from the internet can reach the load balancer directly via the internet gateway
+        - !Ref PublicSubnetId
+        - !Ref AlternatePublicSubnetId
       SecurityGroups:
         - !Ref 'PublicLoadBalancerSecurityGroup'
       Tags:
-      - Key: "Name"
-        Value: !Sub "${AWS::StackName}-alb"
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-alb"
 
     #  WORLD -> 443 -> PublicLoadBalancer
   PublicLoadBalancerSecurityGroupIngress:
@@ -73,17 +73,15 @@ Resources:
       GroupId: !Ref PublicLoadBalancerSecurityGroup
       CidrIp: 0.0.0.0/0
       IpProtocol: tcp
-      FromPort: 443
-      ToPort: 443
+      FromPort: 80
+      ToPort: 80
 
   ApplicationLoadBalancerToEc2:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
       Description: Ingress from the public ALB to instances.
       GroupId: !ImportValue "envimate-cluster-instance-security-group"
-      IpProtocol: tcp
-      FromPort: 32768
-      ToPort: 61000
+      IpProtocol: -1
       SourceSecurityGroupId: !Ref 'PublicLoadBalancerSecurityGroup'
 
 
@@ -92,25 +90,25 @@ Resources:
   DummyTargetGroupPublic:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub "${AWS::StackName}-dummy"
-      Port: 443
+      Name: !Sub "${AWS::StackName}-dummy2"
+      Port: 1337
       VpcId: !Ref VpcId
-      Protocol: HTTPS
+      Protocol: HTTP
       TargetType: "ip"
       Tags:
-      - Key: "Name"
-        Value: !Sub "${AWS::StackName}-tg-dummy"
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-tg-dummy"
 
   PublicLoadBalancerListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     DependsOn:
-    - PublicLoadBalancer
+      - PublicLoadBalancer
     Properties:
       DefaultActions:
-      - TargetGroupArn: !Ref 'DummyTargetGroupPublic'
-        Type: 'forward'
+        - TargetGroupArn: !Ref 'DummyTargetGroupPublic'
+          Type: 'forward'
       LoadBalancerArn: !Ref 'PublicLoadBalancer'
-      Port: 1337
+      Port: 80
       Protocol: HTTP
 
   #############
@@ -123,12 +121,12 @@ Resources:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
-        - Effect: "Allow"
-          Principal:
-            Service:
-            - ecs-tasks.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - ecs-tasks.amazonaws.com
+            Action:
+              - sts:AssumeRole
       RoleName: !Sub "${AWS::StackName}-task-role"
       Path: /
       Policies:
@@ -136,37 +134,37 @@ Resources:
           PolicyDocument:
             Version: 2012-10-17
             Statement:
-            - Sid: list
-              Effect: Allow
-              Action:
-                - "dynamodb:DescribeReservedCapacityOfferings"
-                - "dynamodb:ListGlobalTables"
-                - "dynamodb:TagResource"
-                - "dynamodb:UntagResource"
-                - "dynamodb:ListTables"
-                - "dynamodb:DescribeReservedCapacity"
-                - "dynamodb:ListBackups"
-                - "dynamodb:PurchaseReservedCapacityOfferings"
-                - "dynamodb:ListTagsOfResource"
-                - "dynamodb:DescribeTimeToLive"
-                - "dynamodb:DescribeLimits"
-                - "dynamodb:ListStream"
-              Resource: "*"
-            - Sid: tables
-              Effect: Allow
-              Action:
-                - "dynamodb:*"
-              Resource:
-                - "arn:aws:dynamodb:*:*:table/*/index/*"
-                - "arn:aws:dynamodb:*:*:table/*/stream/*"
-                - "arn:aws:dynamodb:*:*:table/*/backup/*"
-                - "arn:aws:dynamodb::*:global-table/*"
-            - Sid: table
-              Effect: Allow
-              Action:
-                - "dynamodb:*"
-              Resource:
-                - "arn:aws:dynamodb:*:*:table/*"
+              - Sid: list
+                Effect: Allow
+                Action:
+                  - "dynamodb:DescribeReservedCapacityOfferings"
+                  - "dynamodb:ListGlobalTables"
+                  - "dynamodb:TagResource"
+                  - "dynamodb:UntagResource"
+                  - "dynamodb:ListTables"
+                  - "dynamodb:DescribeReservedCapacity"
+                  - "dynamodb:ListBackups"
+                  - "dynamodb:PurchaseReservedCapacityOfferings"
+                  - "dynamodb:ListTagsOfResource"
+                  - "dynamodb:DescribeTimeToLive"
+                  - "dynamodb:DescribeLimits"
+                  - "dynamodb:ListStream"
+                Resource: "*"
+              - Sid: tables
+                Effect: Allow
+                Action:
+                  - "dynamodb:*"
+                Resource:
+                  - "arn:aws:dynamodb:*:*:table/*/index/*"
+                  - "arn:aws:dynamodb:*:*:table/*/stream/*"
+                  - "arn:aws:dynamodb:*:*:table/*/backup/*"
+                  - "arn:aws:dynamodb::*:global-table/*"
+              - Sid: table
+                Effect: Allow
+                Action:
+                  - "dynamodb:*"
+                Resource:
+                  - "arn:aws:dynamodb:*:*:table/*"
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -180,34 +178,34 @@ Resources:
       Cpu: !Ref Cpu
       Memory: !Ref Memory
       ContainerDefinitions:
-      - Name: !Ref "AWS::StackName"
-        Image: !Ref Image
-        Essential: true
-        Privileged: false
-        PortMappings:
-        - ContainerPort: 1337
-        Environment:
-          - Name: JAVA_OPTS
-            Value: !Ref JavaOpts
-        HealthCheck:
-          Command:
-          - "CMD-SHELL"
-          - "if [ $(wget --tries 3 --timeout=20  --quiet http://localhost:1337/health  -O - | grep '\"status\" : \"HEALTHY\"' | wc -l) == 2 ];then exit 0 ;else exit 1 ;fi"
-          #The time period in seconds between each health check execution. You may specify between 5 and 300 seconds. The default value is 30 seconds.
-          Interval: 30
-          #The number of times to retry a failed health check before the container is considered unhealthy. You may specify between 1 and 10 retries. The default value is 3 retries.
-          Retries: 3
-          #The optional grace period within which to provide containers time to bootstrap before failed health checks count towards the maximum number of retries.
-          #You may specify between 0 and 300 seconds. The startPeriod is disabled by default.
-          StartPeriod: 50
-          #The time period in seconds to wait for a health check to succeed before it is considered a failure. You may specify between 2 and 60 seconds. The default value is 5 seconds.
-          Timeout: 5
-        LogConfiguration:
-          LogDriver: awslogs
-          Options:
-            awslogs-region: !Ref AWS::Region
-            awslogs-group: !ImportValue "envimate-cluster-log-group"
-            awslogs-stream-prefix: !Ref AWS::StackName
+        - Name: !Ref "AWS::StackName"
+          Image: !Ref Image
+          Essential: true
+          Privileged: false
+          PortMappings:
+            - ContainerPort: 1337
+          Environment:
+            - Name: JAVA_OPTS
+              Value: !Ref JavaOpts
+          HealthCheck:
+            Command:
+              - "CMD-SHELL"
+              - "if [ $(wget --tries 3 --timeout=20  --quiet http://localhost:1337/health  -O - | grep '\"status\" : \"HEALTHY\"' | wc -l) == 2 ];then exit 0 ;else exit 1 ;fi"
+            #The time period in seconds between each health check execution. You may specify between 5 and 300 seconds. The default value is 30 seconds.
+            Interval: 30
+            #The number of times to retry a failed health check before the container is considered unhealthy. You may specify between 1 and 10 retries. The default value is 3 retries.
+            Retries: 3
+            #The optional grace period within which to provide containers time to bootstrap before failed health checks count towards the maximum number of retries.
+            #You may specify between 0 and 300 seconds. The startPeriod is disabled by default.
+            StartPeriod: 50
+            #The time period in seconds to wait for a health check to succeed before it is considered a failure. You may specify between 2 and 60 seconds. The default value is 5 seconds.
+            Timeout: 5
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-region: !Ref AWS::Region
+              awslogs-group: !ImportValue "envimate-cluster-log-group"
+              awslogs-stream-prefix: !Ref AWS::StackName
 
   Service:
     Type: AWS::ECS::Service
@@ -218,7 +216,7 @@ Resources:
       DeploymentConfiguration:
         MaximumPercent: 166
         MinimumHealthyPercent: 100
-#      HealthCheckGracePeriodSeconds: ???
+      #      HealthCheckGracePeriodSeconds: ???
       LaunchType: "FARGATE"
       NetworkConfiguration:
         AwsvpcConfiguration:
@@ -228,9 +226,9 @@ Resources:
           Subnets:
             - !Ref PublicSubnetId
             - !Ref AlternatePublicSubnetId
-#      LoadBalancers:
-#        Field: "attribute:ecs.availability-zone"
-#      Role: The name or ARN of an AWS Identity and Access Management (IAM) role that allows your Amazon ECS container agent to make calls to your load balancer.
+      #      LoadBalancers:
+      #        Field: "attribute:ecs.availability-zone"
+      #      Role: The name or ARN of an AWS Identity and Access Management (IAM) role that allows your Amazon ECS container agent to make calls to your load balancer.
       SchedulingStrategy: "REPLICA"
       TaskDefinition: !Ref TaskDefinition
       LoadBalancers:
@@ -241,11 +239,11 @@ Resources:
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub "${AWS::StackName}-alb"
+      Name: !Sub "${AWS::StackName}-alb2"
       Matcher:
         HttpCode: 200
       HealthCheckIntervalSeconds: 10
-      HealthCheckPath: /actuator/health
+      HealthCheckPath: /health
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 3
@@ -254,36 +252,36 @@ Resources:
       Protocol: HTTP
       TargetType: "ip"
       TargetGroupAttributes:
-      - Key: deregistration_delay.timeout_seconds
-        Value: 30
+        - Key: deregistration_delay.timeout_seconds
+          Value: 30
       VpcId: !Ref VpcId
       Tags:
-      - Key: "Name"
-        Value: !Sub "${AWS::StackName}-tg-alb"
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-tg-alb"
 
   TargetGroupEmpty:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: PublicLoadBalancer
     Properties:
-      Name: !Sub "${AWS::StackName}-empty"
+      Name: !Sub "${AWS::StackName}-empty2"
       VpcId: !Ref VpcId
       Port: 1337
       Protocol: HTTP
       TargetType: "ip"
       Tags:
-      - Key: "Name"
-        Value: !Sub "${AWS::StackName}-tg-empty"
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-tg-empty"
 
   LoadBalancerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
       Actions:
-      - TargetGroupArn: !Ref 'TargetGroup'
-        Type: 'forward'
+        - TargetGroupArn: !Ref 'TargetGroup'
+          Type: 'forward'
       Conditions:
-      - Field: path-pattern
-        Values:
-         - /api*
+        - Field: path-pattern
+          Values:
+            - /api*
       ListenerArn: !Ref PublicLoadBalancerListener
       Priority: 2
 
@@ -291,41 +289,41 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
       Actions:
-      - Type: forward
-        TargetGroupArn:
-          Ref: TargetGroupEmpty
+        - Type: forward
+          TargetGroupArn:
+            Ref: TargetGroupEmpty
       Conditions:
-      - Field: path-pattern
-        Values:
-        - "/health*"
+        - Field: path-pattern
+          Values:
+            - "/health*"
       ListenerArn:
         Ref: PublicLoadBalancerListener
       Priority: 1
 
-##### DB
+  ##### DB
 
   ResourceTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
-        - AttributeName: "Id"
+        - AttributeName: "id"
           AttributeType: "S"
       BillingMode: PAY_PER_REQUEST
-#      GlobalSecondaryIndexes:
-#        - GlobalSecondaryIndexes
+      #      GlobalSecondaryIndexes:
+      #        - GlobalSecondaryIndexes
       KeySchema:
-        - AttributeName: "Id"
+        - AttributeName: "id"
           KeyType: HASH
-#      LocalSecondaryIndexes:
-#        - LocalSecondaryIndexes
-#      PointInTimeRecoverySpecification:
-#        PointInTimeRecoverySpecification
-#      ProvisionedThroughput:
-#        ProvisionedThroughput
-#      SSESpecification:
-#        SSESpecification
-#      StreamSpecification:
-#        StreamSpecification
+      #      LocalSecondaryIndexes:
+      #        - LocalSecondaryIndexes
+      #      PointInTimeRecoverySpecification:
+      #        PointInTimeRecoverySpecification
+      #      ProvisionedThroughput:
+      #        ProvisionedThroughput
+      #      SSESpecification:
+      #        SSESpecification
+      #      StreamSpecification:
+      #        StreamSpecification
       TableName: resource
       Tags:
         - Key: Name
@@ -337,3 +335,5 @@ Resources:
 Outputs:
   ServiceName:
     Value: !GetAtt Service.Name
+  EndpointUrl:
+    Value: !GetAtt PublicLoadBalancer.DNSName

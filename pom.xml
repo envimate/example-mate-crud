@@ -37,6 +37,7 @@
 		<junit.version.suffix>5.0-M1</junit.version.suffix>
 		<junit.jupiter.version>5.${junit.version.suffix}</junit.jupiter.version>
 		<junit.platform.version>1.${junit.version.suffix}</junit.platform.version>
+		<aws.sdk.version>1.11.534</aws.sdk.version>
 		<checkstyle.suppressions.location>
 			${project.basedir}/src/test/checkstyle/checkstyle-suppressions.xml
 		</checkstyle.suppressions.location>
@@ -116,6 +117,14 @@
 			<version>4.2.2</version>
 		</dependency>
 
+
+		<!--AWS-->
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-dynamodb</artifactId>
+			<version>${aws.sdk.version}</version>
+		</dependency>
 
 		<!--TEST SCOPE-->
 		<dependency>

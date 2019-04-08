@@ -19,15 +19,16 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.infrastructure.guice;
+package com.envimate.examples.example_mate_crud.infrastructure.db;
 
 import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
-import com.envimate.examples.example_mate_crud.infrastructure.db.ResourceRealRepository;
+import com.envimate.examples.example_mate_crud.infrastructure.guice.CrudModule;
 import com.google.inject.Singleton;
 
-public class RepositoryModule extends CrudModule {
+public class RepositoryDynamoDbModule extends CrudModule {
     @Override
     protected void bindDependencies() {
-        bind(ResourceRepository.class).to(ResourceRealRepository.class).in(Singleton.class);
+        bindToSingleConstructor(ResourceDynamoDbRepository.class).in(Singleton.class);
+        bind(ResourceRepository.class).to(ResourceDynamoDbRepository.class);
     }
 }

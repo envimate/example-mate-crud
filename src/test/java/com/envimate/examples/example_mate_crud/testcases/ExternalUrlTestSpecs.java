@@ -19,33 +19,11 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.infrastructure.db;
+package com.envimate.examples.example_mate_crud.testcases;
 
-import com.envimate.examples.example_mate_crud.domain.Id;
-import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
-import com.envimate.examples.example_mate_crud.usecases.Resource;
+import com.envimate.examples.example_mate_crud.infrastructure.ExternalUrlParameterResolver;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.List;
-
-public class ResourceRealRepository implements ResourceRepository {
-    @Override
-    public List<Resource> all() {
-        return null;
-    }
-
-    @Override
-    public void create(final Resource resource) {
-
-    }
-
-    @Override
-    public Resource find(final Id id) {
-        return null;
-    }
-
-    @Override
-    public void update(final Resource resource) {
-
-    }
-
+@ExtendWith(ExternalUrlParameterResolver.class)
+public class ExternalUrlTestSpecs implements ListTestCase, CreateTestCase, FetchTestCase, UpdateTestCase {
 }

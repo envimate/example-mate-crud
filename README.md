@@ -10,8 +10,6 @@ These DTOs are modeled after the json example provided in the PDF of the assignm
 
 The so-called CustomTypes however may be reused between domain objects and DTOs. These are things like "Address" and "BankId", "Amount", etc. By introducing this simplistic objects, we avoid primitive obsession and provide a foundation for validated domain in the future. 
 
-
-
 ## Validation
 
 Example validations are provided in the DTOs. Those can be easily modified per real requirement (e.g. String lengths, int vs long, etc have been guesses from my side).
@@ -30,3 +28,23 @@ As for persistence layer, tests are running an "in memory database" (just a map)
 
 The supported endpoints are easy to look up in HttpMateFactory.java
 There you can see which "UseCase" class, handles which endpoint with which HTTP Method.
+
+## How to run on AWS
+
+The infrastructure is provided using CloudFormation templates in 'src/main/aws'
+Shell scripts are provided as convenience to create those.
+Here is a quick-start to run the application in aws.
+
+0. make sure you are running on a CLI that has aws credentials configured.
+1. execute 
+```
+docker build --build-arg VERSION=0.0.1  -f src/main/docker/Dockerfile . -t example-mate-crud
+``` 
+2. ensure you have a pre-created ECR repository you want to push the image to and use the name in the command:
+
+```
+docker tag example-mate-crud:latest <YOUR_AWS_ACCOUNT_ID>.dkr.ecr.eu-central-1.amazonaws.com/example-mate-crud:latest
+docker push <YOUR_AWS_ACCOUNT_ID>.dkr.ecr.eu-central-1.amazonaws.com/example-mate-crud:latest
+```
+
+3. 

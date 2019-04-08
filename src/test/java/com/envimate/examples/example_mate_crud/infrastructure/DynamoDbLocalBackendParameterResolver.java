@@ -19,9 +19,8 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud;
+package com.envimate.examples.example_mate_crud.infrastructure;
 
-import com.envimate.examples.example_mate_crud.infrastructure.HttpMateFactory;
 import com.envimate.examples.example_mate_crud.infrastructure.db.RepositoryDynamoDbModule;
 import com.envimate.examples.example_mate_crud.infrastructure.endpoints.PureJavaEndpoint;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.AwsModule;
@@ -30,23 +29,24 @@ import com.envimate.examples.example_mate_crud.infrastructure.guice.UseCaseModul
 import com.envimate.httpmate.HttpMate;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
-@ToString
-@EqualsAndHashCode
-public final class Application {
+import static com.envimate.examples.example_mate_crud.infrastructure.Host.host;
+
+public class DynamoDbLocalBackendParameterResolver extends AbstractBackendParameterResolver {
+
     private static final int LOCAL_ENDPOINT_PORT = 1337;
 
-    private Application() {
-    }
-
-    public static void main(final String[] args) {
+    protected void start() {
         final Injector injector = Guice.createInjector(new AwsModule(), new RepositoryDynamoDbModule(),
                 new MapMateModule(),
                 new UseCaseModule());
         final HttpMateFactory httpMateFactory = injector.getInstance(HttpMateFactory.class);
         final HttpMate httpMate = httpMateFactory.httpMate();
         PureJavaEndpoint.pureJavaEndpointFor(httpMate).listeningOnThePort(LOCAL_ENDPOINT_PORT);
+    }
+
+    @Override
+    protected BackendClient backendClient() {
+        return BackendClient.backendClient(host("http://localhost:" + LOCAL_ENDPOINT_PORT));
     }
 }

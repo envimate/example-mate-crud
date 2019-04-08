@@ -21,18 +21,24 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
+import java.util.List;
+
 public abstract class AbstractBackendParameterResolver implements ParameterResolver {
+    private static final List<Class<?>> SUPPORTED_PARAMETER_CLASSES = List.of(BackendClient.class, DynamoDB.class);
     private static Boolean isStarted = false;
 
     @Override
     public boolean supportsParameter(final ParameterContext parameterContext,
                                      final ExtensionContext extensionContext) throws ParameterResolutionException {
-        return parameterContext.getParameter().getType().equals(BackendClient.class);
+        return SUPPORTED_PARAMETER_CLASSES.contains(parameterContext.getParameter().getType());
     }
 
     @Override
@@ -45,6 +51,9 @@ public abstract class AbstractBackendParameterResolver implements ParameterResol
         final Class<?> parameterType = parameterContext.getParameter().getType();
         if (parameterType.equals(BackendClient.class)) {
             return backendClient();
+        } else if (parameterType.equals(DynamoDB.class)) {
+            final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.defaultClient();
+            return new DynamoDB(client);
         }
         throw new UnsupportedOperationException("Unsupported dependency");
     }
