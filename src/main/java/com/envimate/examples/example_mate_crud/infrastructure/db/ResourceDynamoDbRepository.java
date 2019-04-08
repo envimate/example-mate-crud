@@ -113,7 +113,7 @@ public class ResourceDynamoDbRepository implements ResourceRepository {
                 "resource", attributeValue(serializedResource));
 
         final Put updateItem = new Put()
-                .withTableName("resource")
+                .withTableName(TABLE_NAME)
                 .withItem(newItem)
                 .withExpressionAttributeValues(expressionAttributeValuesForPut)
                 .withConditionExpression("version = :expected_version")

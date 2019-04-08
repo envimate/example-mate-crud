@@ -65,6 +65,11 @@ used to provide the test modes:
 * dynamodb local: providing medium speed tests using a "real" database (dynamodb setup with cloudformation in AWS)
 * remote: providing slow but realistic feedback fully-blown integration tests (calling an already deployed http endpoint somewhere - in this case AWS LB)
 
+The default test mode is "local backend".
+If the AWS env variables are present the "dynamodb local" will be executed.
+If the ENVIMATE_CRUD_ENDPOINT env variable is present (should point to a deployed endpoint e.g. the LB), the remote will
+be executed. 
+(mvn clean verify respects this)
 
 ## BUILD
 
@@ -81,7 +86,7 @@ useful maven profiles, etc.
 ```bash
 
 mvn clean verify
-INMEMORY_MODE_ENABLED="" java -jar target/example-mate-crud-0.0.5-jar-with-dependencies.jar
+INMEMORY_MODE_ENABLED="" java -jar target/example-mate-crud-0.0.6-jar-with-dependencies.jar
 
 curl http://localhost:1337/health
 curl http://localhost:1337/api/resource

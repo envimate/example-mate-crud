@@ -190,8 +190,7 @@ Resources:
           HealthCheck:
             Command:
               - "CMD-SHELL"
-#              - "if [ $(wget --tries 3 --timeout=20  --quiet http://localhost:1337/health  -O - | grep '\"status\":\"HEALTHY\"' | wc -l) == 1 ];then exit 0 ;else exit 1 ;fi"
-              - "curl -f http://localhost:1337/ || exit 1"
+              - "curl -f http://localhost:1337/health || exit 1"
             #The time period in seconds between each health check execution. You may specify between 5 and 300 seconds. The default value is 30 seconds.
             Interval: 30
             #The number of times to retry a failed health check before the container is considered unhealthy. You may specify between 1 and 10 retries. The default value is 3 retries.

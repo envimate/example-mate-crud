@@ -8,6 +8,7 @@
 		</encoder>
 	</appender>
 	<logger name="com.envimate.examples.example_mate_crud.testcases.DynamoDbLocalBackendTestSpecs" level="trace"/>
+	<logger name="com.envimate.examples.example_mate_crud.testcases.RemoteTestSpecs" level="trace"/>
 	<root level="info">
 		<appender-ref ref="STDOUT"/>
 	</root>
