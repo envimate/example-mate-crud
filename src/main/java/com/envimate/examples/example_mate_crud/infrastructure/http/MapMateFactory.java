@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package com.envimate.examples.example_mate_crud.infrastructure;
+package com.envimate.examples.example_mate_crud.infrastructure.http;
 
 import com.envimate.examples.example_mate_crud.validation.CustomTypeValidationException;
 import com.envimate.mapmate.deserialization.Deserializer;

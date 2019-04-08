@@ -38,7 +38,7 @@ public final class FetchResource {
         if (resource == null) {
             throw ResourceNotFoundException.resourceNotFoundException("Resource for id %s not found", id.internalValue());
         }
-        //TODO clone? DTO?... is a DTO?...
+
         return resource;
     }
 }

@@ -21,6 +21,8 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure.db;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.envimate.examples.example_mate_crud.domain.repository.ResourceRepository;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.CrudModule;
 import com.google.inject.Singleton;
@@ -28,6 +30,8 @@ import com.google.inject.Singleton;
 public class RepositoryDynamoDbModule extends CrudModule {
     @Override
     protected void bindDependencies() {
+        final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.defaultClient();
+        bind(AmazonDynamoDB.class).toInstance(client);
         bindToSingleConstructor(ResourceDynamoDbRepository.class).in(Singleton.class);
         bind(ResourceRepository.class).to(ResourceDynamoDbRepository.class);
     }

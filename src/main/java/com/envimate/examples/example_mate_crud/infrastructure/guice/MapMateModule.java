@@ -21,7 +21,7 @@
 
 package com.envimate.examples.example_mate_crud.infrastructure.guice;
 
-import com.envimate.examples.example_mate_crud.infrastructure.MapMateFactory;
+import com.envimate.examples.example_mate_crud.infrastructure.http.MapMateFactory;
 import com.envimate.mapmate.deserialization.Deserializer;
 import com.envimate.mapmate.serialization.Serializer;
 

@@ -21,17 +21,20 @@
 
 package com.envimate.examples.example_mate_crud;
 
-import com.envimate.examples.example_mate_crud.infrastructure.HttpMateFactory;
 import com.envimate.examples.example_mate_crud.infrastructure.db.RepositoryDynamoDbModule;
-import com.envimate.examples.example_mate_crud.infrastructure.guice.AwsModule;
+import com.envimate.examples.example_mate_crud.infrastructure.db.inmemory.RepositoryInMemoryModule;
+import com.envimate.examples.example_mate_crud.infrastructure.guice.CrudModule;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.MapMateModule;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.UseCaseModule;
+import com.envimate.examples.example_mate_crud.infrastructure.http.HttpMateFactory;
 import com.envimate.httpmate.HttpMate;
 import com.envimate.httpmate.convenience.endpoints.PureJavaEndpoint;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import java.util.Optional;
 
 @ToString
 @EqualsAndHashCode
@@ -42,9 +45,12 @@ public final class Application {
     }
 
     public static void main(final String[] args) {
-        final Injector injector = Guice.createInjector(new AwsModule(), new RepositoryDynamoDbModule(),
-                new MapMateModule(),
-                new UseCaseModule());
+
+        final CrudModule persistenceModule = Optional.ofNullable(System.getenv("INMEMORY_MODE_ENABLED"))
+                .map(s -> (CrudModule) new RepositoryInMemoryModule())
+                .orElseGet(RepositoryDynamoDbModule::new);
+
+        final Injector injector = Guice.createInjector(persistenceModule, new MapMateModule(), new UseCaseModule());
         final HttpMateFactory httpMateFactory = injector.getInstance(HttpMateFactory.class);
         final HttpMate httpMate = httpMateFactory.httpMate();
         PureJavaEndpoint.pureJavaEndpointFor(httpMate).listeningOnThePort(LOCAL_ENDPOINT_PORT);

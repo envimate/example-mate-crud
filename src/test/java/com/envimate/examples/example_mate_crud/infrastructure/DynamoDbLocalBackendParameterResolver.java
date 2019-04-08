@@ -22,9 +22,9 @@
 package com.envimate.examples.example_mate_crud.infrastructure;
 
 import com.envimate.examples.example_mate_crud.infrastructure.db.RepositoryDynamoDbModule;
-import com.envimate.examples.example_mate_crud.infrastructure.guice.AwsModule;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.MapMateModule;
 import com.envimate.examples.example_mate_crud.infrastructure.guice.UseCaseModule;
+import com.envimate.examples.example_mate_crud.infrastructure.http.HttpMateFactory;
 import com.envimate.httpmate.HttpMate;
 import com.envimate.httpmate.convenience.endpoints.PureJavaEndpoint;
 import com.google.inject.Guice;
@@ -40,7 +40,7 @@ public class DynamoDbLocalBackendParameterResolver extends AbstractBackendParame
 
     @Override
     protected void start() {
-        this.injector = Guice.createInjector(new AwsModule(), new RepositoryDynamoDbModule(),
+        this.injector = Guice.createInjector( new RepositoryDynamoDbModule(),
                 new MapMateModule(),
                 new UseCaseModule());
         final HttpMateFactory httpMateFactory = this.injector.getInstance(HttpMateFactory.class);

@@ -190,7 +190,8 @@ Resources:
           HealthCheck:
             Command:
               - "CMD-SHELL"
-              - "if [ $(wget --tries 3 --timeout=20  --quiet http://localhost:1337/health  -O - | grep '\"status\" : \"HEALTHY\"' | wc -l) == 2 ];then exit 0 ;else exit 1 ;fi"
+#              - "if [ $(wget --tries 3 --timeout=20  --quiet http://localhost:1337/health  -O - | grep '\"status\":\"HEALTHY\"' | wc -l) == 1 ];then exit 0 ;else exit 1 ;fi"
+              - "curl -f http://localhost:1337/ || exit 1"
             #The time period in seconds between each health check execution. You may specify between 5 and 300 seconds. The default value is 30 seconds.
             Interval: 30
             #The number of times to retry a failed health check before the container is considered unhealthy. You may specify between 1 and 10 retries. The default value is 3 retries.
@@ -282,23 +283,9 @@ Resources:
         - Field: path-pattern
           Values:
             - /api*
+            - /health
       ListenerArn: !Ref PublicLoadBalancerListener
       Priority: 2
-
-  ListenerRuleForManagement:
-    Type: AWS::ElasticLoadBalancingV2::ListenerRule
-    Properties:
-      Actions:
-        - Type: forward
-          TargetGroupArn:
-            Ref: TargetGroupEmpty
-      Conditions:
-        - Field: path-pattern
-          Values:
-            - "/health*"
-      ListenerArn:
-        Ref: PublicLoadBalancerListener
-      Priority: 1
 
   ##### DB
 
@@ -309,28 +296,13 @@ Resources:
         - AttributeName: "id"
           AttributeType: "S"
       BillingMode: PAY_PER_REQUEST
-      #      GlobalSecondaryIndexes:
-      #        - GlobalSecondaryIndexes
       KeySchema:
         - AttributeName: "id"
           KeyType: HASH
-      #      LocalSecondaryIndexes:
-      #        - LocalSecondaryIndexes
-      #      PointInTimeRecoverySpecification:
-      #        PointInTimeRecoverySpecification
-      #      ProvisionedThroughput:
-      #        ProvisionedThroughput
-      #      SSESpecification:
-      #        SSESpecification
-      #      StreamSpecification:
-      #        StreamSpecification
       TableName: resource
       Tags:
         - Key: Name
           Value: ResourceTable
-#      TimeToLiveSpecification:
-#        TimeToLiveSpecification
-
 
 Outputs:
   ServiceName:

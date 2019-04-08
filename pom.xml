@@ -31,7 +31,7 @@
 
 	<groupId>com.envimate.examples</groupId>
 	<artifactId>example-mate-crud</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.5</version>
 
 	<properties>
 		<junit.version.suffix>5.0-M1</junit.version.suffix>
